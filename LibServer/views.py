@@ -40,21 +40,22 @@ configuration_groups = {
         "short":"Network",
         "desc":"Configure DNS and other general network configuration",
         "icon":"fa fa-wrench",
-        "type":"single",
+        "type":"multi",
         "template":"cfg_network.html",
         "section":"network",
+        "namespace":"interface",
         "leaf":"Network"
         },
-    "network_interface":{
-        "name":"Interface Configuration",
-        "short":"Network Interfaces",
-        "desc":"Configure how your box uses its network interfaces",
-        "icon":"fa fa-microchip",
-        "namespace": "interface",
-        "type":"multi",
-        "template":None,
-        "leaf":"Interface"
-        },
+#    "network_interface":{
+#        "name":"Interface Configuration",
+#        "short":"Network Interfaces",
+#        "desc":"Configure how your box uses its network interfaces",
+#        "icon":"fa fa-microchip",
+#        "namespace": "interface",
+#        "type":"multi",
+#        "template":None,
+#        "leaf":"Interface"
+#        },
     "services":{
         "name":"Service Configuration",
         "short":"Services",
@@ -139,9 +140,70 @@ def get_group_sections(config_reader, group):
     return this_group_subpages
 
 
+###
+
+## We're going to re-work how we handle configuration pages.
+# What we want is to make the format
+# /config/<section>
+
+@app.route('/config/<section>')
+def config_section(section):
+    """
+    This configures a specific section of the configuration file
+    """
+
+    # get a handle on the configuration reader
+    config_reader = get_config_reader()
+
+    # First we want to know if it's a top-level group.
+    # If so, we're going to render its page.
+
+    # Get the current options for the section. 
+    config_options = config_reader.items(section)
+     
+    # Find the group that this section belongs to.
+    # When we're in a namespaced section, we'll be in the group that the namespace belongs to.
+    current_group = None
+    is_child = False
+    for group in configuration_groups:
+        if section == group["section"]:
+            current_group = group
+            break
+        else:
+            # Check to see if our section is a child of the group
+            if configuration_groups[group]["type"] == multi:
+                # We want to know if the namespace of that group matches.
+                namespace = configuration_groups[group]["namespace"]
+                if section.startswith(namespace+"."):
+                    current_group = group
+                    is_child = True
+                    break
+
+    # If this search returned nobody, this section cannot be configured through the web interface.
+    if current_group == None:
+        abort(500)
 
 
-@app.route("/config/<group>")
+    cgroupdict = configuration_groups[current_group]
+
+    # We now need to know what template to use for this.
+    # we do this by building a list of possible templates. 
+    
+    templates = [ cgroupdict["template"],  'cfg_generic.html']
+
+    if cgroupdict['type'] == 'multi':
+        templates.insert(0, "cfg_"+cgroupdict['namespace'])
+
+    # we need to pass in the current section, the sections 
+
+    pass
+
+
+
+
+###
+
+@app.route("/config/x/<group>")
 def config_group(group):
     """
     this route gets a specific section. If that section is a single section, it shows it.
