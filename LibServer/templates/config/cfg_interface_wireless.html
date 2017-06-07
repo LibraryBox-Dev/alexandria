@@ -1,0 +1,23 @@
+{% extends "config/base.html" %}
+{% block config_page_content %}
+<h1>Wireless interface</h1>
+{{field('enable', "Enable interface", 'checkbox')}}
+{{field('dhcp', "Use DHCP", 'checkbox')}}
+
+<h2>Client mode</h2>
+<div class="form-group"><em>You may leave this blank if you don't intend to connect to the internet through your device.</em></div>
+
+{{field('ssid', "SSID", 'text')}}
+{{field('security_mode', "Security mode", 'text')}}
+{{field('security_key','Network key', 'text')}}
+
+
+<h2>IP configuration</h2>
+{{field('ip', "IP Address", 'text')}}
+{{field('subnet_mask', "Subnet mask")}}
+{{field('gateway', "Gateway")}}
+<div class="form-group"><em>You may leave this blank if you don't intend to connect to the internet through your device.</em></div>
+
+
+{{savebutton()}}
+{% endblock %}

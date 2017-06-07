@@ -1,0 +1,53 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }} » Admin</title>
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/bootstrap.min.css')}}" />
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/font-awesome.min.css')}}" />
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/local.css')}}" />
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/site.css')}}" />
+    <script src="/static/js/modernizr-2.6.2.js"></script>
+</head>
+
+<body>
+    <div class="container body-content">
+    <div class="navbar navbar-default">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <!--span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span> -->
+
+                    <i class="fa fa-bars fa-fw"></i>
+
+                </button>
+                <a href="/" class="navbar-brand navbar-left"><img src="{{url_for('static', filename='brand.png')}}" /></a>
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="{{ url_for('home') }}"><i class="fa fa-home fa-fw"></i>&nbsp;Home</a>
+                    <li><a href="{{url_for('config_index')}}"><i class="fa fa-cogs fa-fw"></i>&nbsp;Configuration</a></li>
+                    <li><a href="#"><i class="fa fa-fw fa-tachometer"></i>&nbsp;Statistics</a></li>
+
+                </ul>
+            </div>
+        </div>
+    </div>
+
+        {% block content %}{% endblock %}
+        <hr />
+        <footer>
+            <p>BoxMin v 0.01</p>
+        </footer>
+    </div>
+
+    <script src="{{url_for('static', filename='js/jquery-1.10.2.js')}}"></script>
+    <script src="{{url_for('static', filename='js/bootstrap.js')}}"></script>
+    <script src="{{url_for('static', filename='js/respond.js')}}"></script>
+    {% block scripts %}{% endblock %}
+
+</body>
+</html>

@@ -1,0 +1,101 @@
+{% extends "config.html" %}
+{% block config_content %}
+
+
+    <h2>General</h2>
+
+    <div class="form-group">
+        <label class="col-sm-4 control-label">DNS Server</label>
+        <div class="col-sm-8"><input type="text" class="form-control" placeholder="e.g. 4.2.2.2" /></div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox"> Enable bridging
+                </label>
+            </div>
+        </div>
+    </div>
+
+
+    <h2>Wired network</h2>
+    <h3>IP Configuration</h3>
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox"> Use DHCP for wired network.
+                </label>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-4 control-label">Address</label>
+        <div class="col-sm-8"><input type="text" class="form-control" /></div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-4 control-label">Subnet mask</label>
+        <div class="col-sm-8"><input type="text" class="form-control" /></div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-4 control-label">Gateway</label>
+        <div class="col-sm-8"><input type="text" class="form-control" /></div>
+    </div>
+
+
+    <h2>Wireless</h2>
+
+    <div class="form-group">
+        <label class="col-sm-4 control-label">Mode</label>
+        <div class="col-sm-8"><select class="form-control">
+            <option>AP</option>
+            <option>Client</option>
+        </select>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-sm-4 control-label">SSID</label>
+        <div class="col-sm-8"><input type="text" class="form-control" placeholder="SpanektetyPublic" /></div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-4 control-label">Security</label>
+        <div class="col-sm-8">
+            <select class="form-control">
+                <option value="auth_none">Open</option>
+                <option value="auth_wep">WEP</option>
+                <option value="auth_wpa">WPA2</option>
+            </select>
+         </div>
+     </div>
+    <div class="form-group">
+        <label class="col-sm-4 control-label"> Passphrase</label>
+        <div class="col-sm-8"><input type="password" class="form-control" placeholder="1235chunkybacons" /></div>
+        <span class="col-sm-8 help-block">When using a secured network, this is used as the password for the network. If you forget this, you may need to reset your device.</span>
+    </div>
+
+    <h3>IP Configuration</h3>
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox"> Use DHCP.
+                </label>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-4 control-label">Address</label>
+        <div class="col-sm-8"><input type="text" class="form-control" /></div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-4 control-label">Subnet mask</label>
+        <div class="col-sm-8"><input type="text" class="form-control" /></div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-4 control-label">Gateway</label>
+        <div class="col-sm-8"><input type="text" class="form-control" /></div>
+    </div>
+
+{% endblock %}

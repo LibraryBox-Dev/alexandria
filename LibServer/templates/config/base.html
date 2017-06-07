@@ -1,0 +1,97 @@
+{% extends "layout.html" %}
+
+{% macro field( name, label, type='text') -%}{%if type != 'checkbox'%}<div class="form-group">
+ <label for="{{name}}" class="col-md-3 control-label">{{label}}</label>
+ <div class="col-md-9">
+   <input type="{{type}}" class="form-control" id="{{name}}" placeholder="{{label}}" value="{{values[name] or ''}}" >
+ </div>
+ </div>{%else%} <div class="form-group">
+ <div class="col-md-offset-3 col-md-9">
+   <div class="checkbox">
+     <label>
+       <input type="checkbox" name="{{name}}" {% if ( values[name] or 'false' ) == 'true'%}checked{%endif%} > {{label}}
+       <input type="hidden" name="checkbox_{{name}}" value="{{name}}" />
+     </label>
+   </div>
+ </div>
+ </div>
+ {%endif%}
+{%- endmacro %}
+{% macro savebutton() -%} <hr /><div class="form-group">
+ <div class="col-md-offset-3 col-md-9">
+   <button type="submit" class="btn btn-primary">Save</button> <button type="reset" class="btn btn-warning">Reset</button>
+ </div>
+ </div>{%- endmacro %}
+{#
+required content:
+
+current_page -> name of the current section being edited.
+config_pages -> dictionary of available top level sections.
+
+Optionally:
+
+subpages     -> dictionary of subpages (used for sidebar)
+current_subpage -> name of current subpage we're on.
+
+This template is used for "single" section configuration items. We provide a sidebar with a list
+of all the known top level sections that can be configured, while the current section sits in the
+center of the content block. 
+#}
+{% block content %}
+
+<!-- Begin configuration area container. -->
+
+  <div class="row">
+    <div class="col-md-9 col-md-push-3">
+    
+      <ol class="breadcrumb">
+        <li><a href="{{ url_for('config_index')}}">Configuration</a></li>
+      {% if not current_subpage %}
+        <li class="active">{{ config_pages[current_page].short }}</li>
+      {% else %}
+        <li><a href="{{ url_for('config_group', group=current_page) }}">{{ config_pages[current_page].short }}</a></li>
+        <li>{{ current_subpage }}</li>
+      {%endif%}
+      </ol>
+    
+      <form class="form-horizontal" role="form" method="POST" action="{{url_for('write_config', section=ini_section or '')}}">
+      {% block config_page_content %}
+      <!--
+        This content is displayed when there is no configuration
+      -->
+        <div class="icon-placeholder hidden-sm hidden-xs">
+            <p class="text-muted"><i class="fa fa-cogs fa-5x"></i>
+            <br />Please choose a configuration item</p>
+        </div>
+      {% endblock %}
+            </form>
+
+    </div>
+    <!-- sidebar -->
+    <div class="col-md-3 col-md-pull-9">
+    <div class="panel panel-default">
+    <!-- Default panel contents -->
+      <!-- List group -->
+      <div class="list-group">
+      {% for top_section in config_pages %}
+        {% if top_section == current_page %}
+            <div class="list-group-item active"><i class="{{config_pages[top_section].icon}} fa-fw"></i> {{config_pages[top_section].name}}</div>
+          {% if subpages %}
+          <div class="list-group-item">
+            <ul class="nav nav-pills nav-stacked">
+            {% for subpage in subpages %}
+                <li{% if subpage["name"] == current_subpage %} class="active"{% endif %}><a href="{{url_for('config_item', group=subpage.group, item=subpage.name)}}">{{subpage["label"]}}</a></li>
+            {% endfor %} {# subpage loop #}
+            </ul>
+          </div>
+          {% endif %} {# are are there subpages? #}
+        {% else %} {# not not current page #}
+        <a href="{{ url_for('config_group', group=top_section)}}" class="list-group-item"><i class="{{config_pages[top_section].icon}} fa-fw"></i> {{config_pages[top_section].name}}</a>
+        {% endif %} {# current page check #}
+      {% endfor %}
+      </div>
+    </div>
+    </div>
+  </div>
+
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<div class="jumbotron">
+    <h1>All Systems Go</h1>
+    <p class="lead">If you're reading this, you're doing just fine.</p>
+</div>
+
+<h1>Current configuration</h1>
+<h2>Services</h2>
+<ul>
+    <li>File upload: <em>enabled</em></li>
+    <li>IRC: <em>enabled</em></li>
+    <li>Shoutbox: <em>enabled</em></li>
+    <li>Preview engine: <em>enabled</em></li>
+</ul>
+<h2>Disks</h2>
+<table class="table-condensed">
+    <thead><tr>
+        <td>Name</td>
+        <td>Type</td>
+        <td>Capacity</td>
+        <td>Usage</td>
+        </tr></thead>
+    <tr>
+        <td>Primary</td>
+        <td>Internal</td>
+        <td>8GB</td>
+        <td>2.2GB</td>
+    </tr>
+    <tr>
+        <td>Uploads</td>
+        <td>USB</td>
+        <td>16GB</td>
+        <td>8.2GB</td>
+    </tr>
+    
+</table>
+
+{% endblock %}

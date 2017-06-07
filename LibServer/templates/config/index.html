@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<h1>Configuration</h1>
+<div class="row">
+<div class="list-group col-sm-6 col-">
+{% for section in sections %}
+
+    <div class="list-group-item">
+    <div class="media">
+        <div class="media-left">
+            <a href="{{url_for('config_group', group=section)}}">
+                <i class="media-object fa fa-fw fa-5x {{ sections[section].icon }}"></i>
+            </a>
+        </div>
+        <div class="media-body">
+            <a href="{{url_for('config_group', group=section)}}">
+            <h4 class="media-heading">{{sections[section].name}}</h4>
+            </a>
+            <p>{{sections[section].desc}}</p>
+        </div>
+    </div>
+    </div>
+
+{% endfor %}
+</div>
+    </div>
+{% endblock %}

@@ -1,0 +1,9 @@
+{% extends "config/base.html" %}
+{% block config_page_content %}
+<div class="alert alert-warning" role="alert"><strong>Heads up!</strong> This configuration panel isn't super refined! Touching things here might break things if you aren't careful!</div>
+<h2>{{current_subpage}}</h2>
+{% for item in values %}
+{{field(item, item, 'text')}}
+{% endfor %}
+{{savebutton()}}
+{% endblock %}

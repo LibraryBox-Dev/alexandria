@@ -1,0 +1,15 @@
+{% extends "config/base.html" %}
+{% block config_page_content %}
+<h1>Wired interface</h1>
+{{field('enable', "Enable interface", 'checkbox')}}
+{{field('dhcp', "Use DHCP", 'checkbox')}}
+
+<h2>IP configuration</h2>
+{{field('ip', "IP Address", 'text')}}
+{{field('subnet_mask', "Subnet mask")}}
+{{field('gateway', "Gateway")}}
+<div class="form-group"><em>You may leave this blank if you don't intend to connect to the internet through your device.</em></div>
+
+
+{{savebutton()}}
+{% endblock %}
