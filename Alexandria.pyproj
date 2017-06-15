@@ -28,6 +28,9 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="cfgmake.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="runserver.py" />
     <Compile Include="LibServer\__init__.py" />
     <Compile Include="LibServer\views.py" />

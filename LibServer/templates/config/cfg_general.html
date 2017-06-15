@@ -1,12 +1,14 @@
 {% extends "config/base.html" %}
 
-{% block config_section  %}
+{% block config_page_content  %}
 
-<div class="form-group">
-	<label class="form-label col-md-4">Hostname</label>
-	<div class="form-control col-md-8">
-		<input type="text" />
-	</div>
-</div>
+{{field('hostname','Hostname','text')}}
+{{field('titlename','Name','text')}}
+{{field('admin_key','Administration Password','password')}}
+<div class="alert">This is used for the administration panel, not the wireless network.</div>
+{{field('expert_mode','Expert Mode','checkbox')}}
+<div class="alert">Turning this on will let you break things. Options that are not typically settable will be visible if this is enabled.</div>
+
+{{savebutton()}}
 
 {% endblock %}

@@ -5,20 +5,20 @@
 <h1>Configuration</h1>
 <div class="row">
 <div class="list-group col-sm-6 col-">
-{% for section in sections %}
+{% for tgroup in groups %}
 
     <div class="list-group-item">
     <div class="media">
         <div class="media-left">
-            <a href="{{url_for('config_group', group=section)}}">
-                <i class="media-object fa fa-fw fa-5x {{ sections[section].icon }}"></i>
+            <a href="{{url_for('config_section', section=groups[tgroup].section)}}">
+                <i class="media-object fa fa-fw fa-5x {{ groups[tgroup].icon }}"></i>
             </a>
         </div>
         <div class="media-body">
-            <a href="{{url_for('config_group', group=section)}}">
-            <h4 class="media-heading">{{sections[section].name}}</h4>
+            <a href="{{url_for('config_section', section=groups[tgroup].section)}}">
+            <h4 class="media-heading">{{groups[tgroup].name}}</h4>
             </a>
-            <p>{{sections[section].desc}}</p>
+            <p>{{groups[tgroup].desc}}</p>
         </div>
     </div>
     </div>

@@ -1,5 +1,8 @@
 """
-BoxNG admin panel.
+This is the administration view for Alexandria's LibServ
+
+this handles making sure that the user is logged in and allows the user to change settings, as well as 
+several other administration tasks such as restarting the device or restarting services.
 """
 
 from datetime import datetime
@@ -61,6 +64,7 @@ configuration_groups = {
         "short":"Services",
         "desc":"Services you can run on your box",
         "icon":"fa fa-server",
+        "section":"services",
         "namespace":"service",
         "type":"multi",
         "template":"cfg_service.html",
@@ -78,6 +82,40 @@ configuration_groups = {
         }
     }
 
+# this is mostly for the UI.
+# This generates a set of small dictionaries that are used to generate the
+# sidebar of the admin page.
+def get_sidebar():
+    config_reader = get_config_reader() 
+    # We're going to read through each section type and try to generate a sidebar.
+    sidebar = configuration_groups.copy()
+    # We need to copy the configuration groups because otherwise we modify the original.
+    # Python does this. 
+    for group in sidebar:
+        cGroup = sidebar[group]
+        # check to see if this is a multi group
+        # if it is, then we need to fetch the groups 
+        if cGroup["type"] == "multi":
+            # add a chilren item to this item.
+            # This is how we can render the children of this. 
+            # This also has a nice little effect of possibly just listing 
+            # all the available sections in the sidebar.
+            cGroup["children"] = []
+            child_sections = filter( lambda i: i.startswith(cGroup["namespace"] + "." ),  config_reader.sections())
+
+            for section in child_sections:
+                # We're going to add each item here to a submenu.
+                # The template will be sorted out later.
+                child_options = dict(config_reader.items(section))
+                cchild_dict = {
+                    "name":child_options["ui_label"],
+                    "section":section
+                    }
+                cGroup["children"].append(cchild_dict)
+        sidebar[group] = cGroup
+    
+    # We now have a worthwhile sidebar.
+    return sidebar
 
 @app.route("/config")
 def config_index():
@@ -85,7 +123,7 @@ def config_index():
     this route only lists the available sections.
     """
     return render_template("config/index.html",
-                           sections=configuration_groups
+                           groups=configuration_groups
                            )
 
 def get_config_reader():
@@ -154,24 +192,17 @@ def config_section(section):
 
     # get a handle on the configuration reader
     config_reader = get_config_reader()
-
-    # First we want to know if it's a top-level group.
-    # If so, we're going to render its page.
-
-    # Get the current options for the section. 
-    config_options = config_reader.items(section)
-     
     # Find the group that this section belongs to.
     # When we're in a namespaced section, we'll be in the group that the namespace belongs to.
     current_group = None
     is_child = False
     for group in configuration_groups:
-        if section == group["section"]:
+        if section == configuration_groups[group]["section"]:
             current_group = group
             break
         else:
             # Check to see if our section is a child of the group
-            if configuration_groups[group]["type"] == multi:
+            if configuration_groups[group]["type"] == 'multi':
                 # We want to know if the namespace of that group matches.
                 namespace = configuration_groups[group]["namespace"]
                 if section.startswith(namespace+"."):
@@ -181,117 +212,108 @@ def config_section(section):
 
     # If this search returned nobody, this section cannot be configured through the web interface.
     if current_group == None:
-        abort(500)
+        abort(404)
 
+
+    config_options_raw = {}
+    if config_reader.has_section(section):
+        config_options_raw = dict(config_reader.items(section))
+     
 
     cgroupdict = configuration_groups[current_group]
 
-    # We now need to know what template to use for this.
-    # we do this by building a list of possible templates. 
+    sidebar = get_sidebar()
+
+    # we're going to filter the raw items handed to the template from the
+    # configuration files. This makes it harder for the generic template to
+    # mess something up unintentionally.
+
+    config_options_cooked = {}
+    for config_key in config_options_raw.keys():
+        if config_key == "type" or config_key == "ui_label":
+            continue
+        else:
+            config_options_cooked[config_key] = config_options_raw[config_key]
+    # now, config_items_cooked has our filtered keys.
+    # TODO: Make the above easier to extend
+
     
-    templates = [ cgroupdict["template"],  'cfg_generic.html']
-
-    if cgroupdict['type'] == 'multi':
-        templates.insert(0, "cfg_"+cgroupdict['namespace'])
-
-    # we need to pass in the current section, the sections 
-
-    pass
-
-
-
-
-###
-
-@app.route("/config/x/<group>")
-def config_group(group):
-    """
-    this route gets a specific section. If that section is a single section, it shows it.
-    otherwise, it lists the known configuration points within that section. 
-    """
-
-    # TODO: return a 404. 
-    if group not in configuration_groups.keys():
-        abort(404)
-
-    group_dict = configuration_groups[group]
-
-    conf_parser = get_config_reader();
-
-
-    if group_dict["type"] == "multi":
-
-        current_subpages = get_group_sections(conf_parser, group)
-
-        # return the rendered page.
-        return render_template(
-            'config/base.html',
-            current_page=group,
-            config_pages=configuration_groups,
-            current_subpage=None,
-            subpages = current_subpages
+    # walk through templates and render them in order of likelyhood
+    # there are a set of templates that need to be considered here:
+    # in order of specificity,
+    #
+    # if we are looking at a wireless interface (interface.wlan0),
+    # we want to have each of the following templates considered:
+    #
+    # * cfg_interface_wlan0.html
+    # * cfg_interface_wireless.html
+    # * cfg_interface.html
+    # * cfg_generic.html
+    #
+    # for some types, we need the sequence to be a little different
+    # such as in the case of services.
+    # 
+    # * cfg_service_ssh.html
+    # * cfg_service.html
+    # * cfg_generic.html
+    #
+    # We do this by replacing any .'s with _ first, then using that.
+    # The namespace of the selected group is then checked:
+    # 
+    # cfg_{namespace}_{type}
+    # cfg_{namespace}
+    # cfg_generic
+    #
+    #
+    # This means that the best way of handling this is to use the
+    # following hierarchy:
+    #
+    # cfg_{section}.html            -- the most specific
+    # cfg_{namespace}_{type}.html   -- Not as specific but works for interface.
+    # cfg_{namespace}.html          -- A nice fallback for services.
+    # cfg_generic.html              -- Fallback for all others.
+    # 
+    # this means that service.ssh will default use the template
+    # cfg_service_ssh
+    # Then will use `cfg_service.html` (which should exist.) then
+    # as a worst case scenario will fall back on `cfg_generic.html`
+    #   
+    templates = []
+    templates.append('cfg_{0}.html'.format(section.replace('.','_')))
+    if 'type' in config_options_raw:
+        # This only works on some sections as a section is responsible for
+        # declaring its type.
+        # This means we need to check. This also is only really relevant to the
+        # multi section type of group, but this does make things simple.
+        templates.append(
+            'cfg_{0}_{1}.html'.format(
+                cgroupdict['namespace'],
+                config_options_raw['type']
+                )
             )
-    else:
-        config_values = dict(conf_parser.items(group_dict["section"]))
+    if 'namespace' in cgroupdict:
+        templates.append('cfg_{0}.html'.format(cgroupdict['namespace']))
+    templates.append('cfg_generic.html')
+    for template in templates:
+        # at this point, we are going to try rendering each template in order
+        # and move on if there is a problem.
+        # It's not an elegant solution but it works.
 
-        try:
-            # Attempt to render the configuration group's page.
-            return render_template(
-                "config/"+config_group["template"],
-                current_page=group,
-                config_pages=configuration_groups,
-                values=config_values,
-                ini_section=group
-                )
-        except:
-            return render_template(
-                "config/cfg_generic.html",
-                current_page=group,
-                config_pages=configuration_groups,
-                values=config_values,
-                ini_section=group
-                )
+        # passed to template:
+        # current sectiom
+        # list of options in section
+        # list of section groups
+        # possibly list of child sections
 
-    return render_template(
-        'config/base.html',
-        current_page=group,
-        config_pages=configuration_groups
-        )
-
-@app.route("/config/<group>/<item>")
-def config_item(group, item):
-    config_reader = get_config_reader();
-
-    # get the current page.
-
-    subpages = get_group_sections(config_reader, group)
-
-    # todo: this is magic. document it.
-
-    tSubpage = list(filter(lambda x: x["name"] == item and x["group"] == group, subpages )) 
-    if(len(tSubpage)>1):
-        abort(500)
-    else:
-        tSubpage = tSubpage[0]
-
-    # We need the current state of the configuration of that section
-
-    config_options = dict(filter( lambda i: i[0] != 'ui_label' and i[0] != 'type', list(config_reader.items(item))))
-
-    possible_templates = (tSubpage["template"], configuration_groups[group]["template"], "cfg_generic.html")
-
-    for template in possible_templates:
         try:
             return render_template(
                 "config/"+template,
-                current_page=group,
-                current_subpage = item,
-                config_pages = configuration_groups,
-                subpages = subpages,
-                values = config_options,
-                ini_section=item
+                sidebar=sidebar,
+                current_group=current_group,
+                current_section=section,
+                values=config_options_cooked
                 )
-        except:
+        except Exception as e:
             continue
     # this should not be a 5xx -- should it?
     abort(500)
@@ -308,10 +330,5 @@ def write_config(section):
     TODO: we need to implement this. This needs the app search paths work done so this works.
     that will give us the file we want to write to, as the primary config is likely in a read only place.
 
-    TODO: does this need to know the section before hand or can we pass that in via the POST data?
-    I don't think it's a bad idea to have it as part of the url part. This would make the request a little nicer looking. It also has the advantage of making it possible to
-    look a little futher ahead and see if we need to do anything special to the file we're editing: this lets us choose to ban certain sections from being edited easier. 
-
-
     """
-    abort(500)
+    return(redirect(url_for('config_section', section=section)))
