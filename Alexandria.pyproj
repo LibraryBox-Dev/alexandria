@@ -18,6 +18,7 @@
     <Name>Alexandria</Name>
     <RootNamespace>LibServer</RootNamespace>
     <InterpreterId>MSBuild|PYTHON 3.6 VIRTUAL ENVIRONMENT|$(MSBuildProjectFullPath)</InterpreterId>
+    <CommandLineArguments>--baseconfig=default.ini --localconfig=local.ini --debug</CommandLineArguments>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -28,14 +29,17 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="cfgmake.py">
+    <Compile Include="cfgtool.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ConfigEngine\Generators.py" />
+    <Compile Include="ConfigEngine\__init__.py" />
     <Compile Include="runserver.py" />
     <Compile Include="LibServer\__init__.py" />
     <Compile Include="LibServer\views.py" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="ConfigEngine\" />
     <Folder Include="LibServer\" />
     <Folder Include="LibServer\static\" />
     <Folder Include="LibServer\static\css\" />

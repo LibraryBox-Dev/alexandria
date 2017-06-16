@@ -40,10 +40,42 @@ def hostapd(io):
             ])
     # end hostapd configuration generator
 
-@engine.generator("Debian /etc/network/interfaces")
-def debian_network(buffer):
-    pass
+@engine.namespace("interface")
+@engine.assertConfig(None, [ "type","enabled","dhcp","ip","subnet_mask","gateway" ])
+@engine.generator("Debian interface confguration (single interface)",True)
+def debian_interface(buffer, iface):
 
+    # If DHCP is enabled, it's simple
+    ifacedict = engine.getSection("interface."+iface)
+
+    if(toBool(ifacedict["dhcp"])):
+        # Sanity check: Is this the interface for dnsmasq or hostapd?
+        dnsmasq_iface = engine.getOption("network","dnsmasq_interface")
+        hostapd_iface = engine.getOption("network","hostapd_interface")
+        if(iface == dnsmasq_iface or iface == hostapd_iface):
+            raise ValueError("Can't run dnsmasq or hostapd on a dhcp interface.")
+
+        # This is a dhcp interface.
+        writeLines(buffer, [
+            "auto {0}".format(iface),
+            "allow-hotplug {0}".format(iface),
+            "iface {0} inet dhcp".format(iface)
+            ])
+        # we can now return happily.
+        return
+    else:
+        
+        writeLines(buffer, [
+            
+            "auto {0}".format(iface),
+            "iface {0} inet static".format(iface),
+            "\taddress {0}".format(ifacedict["ip"]),
+            "\tnetmask {0}".format(ifacedict["subnet_mask"]),
+            ])
+        if ifacedict["gateway"] != "":
+            writeLines(buffer, ["\tgateway {0}".format(ifacedict["gateway"])])
+
+@engine.assertConfig("general",["hostname"])
 @engine.assertConfig("network", [ 
     "dnsmasq_enable",
     "dnsmasq_interface",
@@ -61,7 +93,24 @@ def dnsmasq(buffer):
 
     writeLines(buffer,[
         "interface={0}".format(network["dnsmasq_interface"]),
-        "dhcp-range={dnsmasq_start_address},{dnsmasq_end_address},{dnsmasq_subnet_mask},{dnsmasq_lease_time}".format_map(network)
+        "dhcp-range={dnsmasq_start_address},{dnsmasq_end_address},{dnsmasq_subnet_mask},{dnsmasq_lease_time}".format_map(network),
+        "local=/{0}/".format(engine.getOption("general","tld")),
+        "dhcp-option=3"
         ])
 
+    # we need to get the IP address of the interface.
+    # we also should make sure that the interface isn't set up for DHCP.
+
+    # Check that the section for the interface exists
+
+    if not engine.hasSection("interface."+network["dnsmasq_interface"]):
+        raise ValueError("Interface for dnsmasq is not defined.")
+    if not engine.hasOption("interface."+network["dnsmasq_interface"], "dhcp") or engine.getOption("interface."+network["dnsmasq_interface"],"dhcp",toBool):
+        raise ValueError("Interface for dnsmasq does not define DHCP option or is configured for dhcp")
+    # we want the IP address of the interface.
+    ipAddr = engine.getOption("interface."+network["dnsmasq_interface"], "ip")
+    writeLines(buffer, ["address=/{0}/{1}".format(
+        engine.getOption("general","hostname")+engine.getOption("general","tld"),
+        ipAddr
+        )])
     pass

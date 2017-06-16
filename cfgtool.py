@@ -6,4 +6,4 @@ import os
 
 engine.setSearchPath([os.path.join(os.getcwd(),"config.ini")])
 
-engine.runGenerator("hostapd")
+engine.runGenerator("dnsmasq")

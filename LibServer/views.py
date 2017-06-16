@@ -128,7 +128,7 @@ def config_index():
 
 def get_config_reader():
     conf_parser = ConfigParser();
-    conf_parser.read("config.ini")
+    conf_parser.read(app.config["configfiles"])
 
     return conf_parser
 

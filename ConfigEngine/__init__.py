@@ -58,6 +58,18 @@ class ConfigEngine(object):
             return func
         return rGenerator
 
+    def namespace(self,namespace):
+        """
+        declares that there is a namespace for this generator for assertions on argument section.
+        """
+        def rGenerator(func):
+            name = func.__name__
+            if name not in self.generators:
+                raise ValueError("undeclared generator {0}".format(name))
+            self.generators[name]["namespace"] = namespace
+            return func
+        return rGenerator
+
     def assertConfig(self, section, keys):
         def rDecorator(func):
             name = func.__name__
@@ -85,11 +97,8 @@ class ConfigEngine(object):
         Arguments:
 
         name        name of the specific parser
-        argument    Argument to be passed to the generator. May not be None.
+        argument    Argument to be passed to the generator. May not be none for generators which take an argument.
 
-        This function calls os.exit() and terminates the process. It shoud be used as a final call only.
-
-        This function ALWAYS terminates.
 
         """
 
@@ -123,9 +132,6 @@ class ConfigEngine(object):
                     # / if option not in parser
                 # / for option in section
             # for section in generator->requires.
-        # did we find any missing parts?
-
-
 
         buffer = io.StringIO()
 
@@ -134,12 +140,14 @@ class ConfigEngine(object):
         if(tGenerator["needs_argument"]):
             if argument == None:
                 raise ValueError("Can't pass an argument that isn't there.")
-
             else:
                 if "arg_requires" in tGenerator:
+                    check_section = argument
+                    if "namespace" in tGenerator:
+                        check_section = tGenerator["namespace"]+"."+argument
                     for option in tGenerator["arg_requires"]:
-                        if not self.parser.has_option(argument, option):
-                            print("Error: Required option {0} not found in section {1}".format(option,argument),file=sys.stderr)
+                        if not self.parser.has_option(check_section, option):
+                            print("Error: Required option {0} not found in section {1}".format(option,check_section),file=sys.stderr)
                             has_missing = True
                 arguments.append(argument)
         # call the func with our arguments.
@@ -147,16 +155,16 @@ class ConfigEngine(object):
         if has_missing:
             print("Missing options in configuration. Please verify that they are indeed set and your search path is correct. Exiting",file=sys.stderr)
             # And bail.
-            sys.exit(-1)
+            return
+
+        # Attempt to do the thing. 
         try:
             tGenerator["func"].__call__(*arguments)
             print(buffer.getvalue())
-            sys.exit(0)
         except Exception as e:
             print("Failed to call {0}".format(name),file=sys.stderr)
             print(e, file=sys.stderr)
             print("This was bad, and potentially not your fault. Please check your configuration files.",file=sys.stderr)
-            sys.exit(-1)
 
     def getGenerators(self):
         return list(self.generators.keys())
@@ -208,6 +216,11 @@ class ConfigEngine(object):
         returns if a specific section is currently in the configuration
         """
         return self.parser.has_section(section)
+    def hasOption(self, section, option):
+        """
+        returns if a specific section's option is set.
+        """
+        return self.parser.has_option(section,option)
     def getSections(self):
         """
         returns a list of sections.
