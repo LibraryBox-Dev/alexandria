@@ -32,7 +32,7 @@
       <ol class="breadcrumb">
       </ol>
     
-      <form class="form-horizontal" role="form" method="POST" action="{{url_for('write_config', section=ini_section or '')}}">
+      <form class="form-horizontal" role="form" method="POST" action="{{url_for('.write_config', section=ini_section or '')}}">
       {% block config_page_content %}
       <!--
         This content is displayed when there is no configuration
@@ -52,16 +52,16 @@
         {% for group in sidebar %}
         <!-- group = {{group}}-->
         {% if group == current_group %}
-            <a href="{{url_for('config_section', section=sidebar[group].section)}}" class="list-group-item active">{{sidebar[group].name}}</a>
+            <a href="{{url_for('.config_section', section=sidebar[group].section)}}" class="list-group-item active">{{sidebar[group].name}}</a>
             {% if sidebar[group].children %}
             <div class="list-group-item"><ul class="nav nav-pills nav-stacked">
                 {% for child in sidebar[group].children %}
-                <li {%if child.section == current_section %}class="active"{%endif%} ><a href="{{url_for('config_section', section=child.section)}}">{{child.name}} ({{child.section}})</a></li>
+                <li {%if child.section == current_section %}class="active"{%endif%} ><a href="{{url_for('.config_section', section=child.section)}}">{{child.name}} ({{child.section}})</a></li>
                 {% endfor %}
             </ul></div>
             {%endif%}
         {% else %}
-        <a class="list-group-item" href="{{url_for('config_section', section=sidebar[group].section)}}">{{sidebar[group].name}}</a>
+        <a class="list-group-item" href="{{url_for('.config_section', section=sidebar[group].section)}}">{{sidebar[group].name}}</a>
         {% endif %}
         {% endfor %}
         </div>

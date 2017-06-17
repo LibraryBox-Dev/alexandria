@@ -10,12 +10,12 @@
     <div class="list-group-item">
     <div class="media">
         <div class="media-left">
-            <a href="{{url_for('config_section', section=groups[tgroup].section)}}">
+            <a href="{{url_for('admin.config_section', section=groups[tgroup].section)}}">
                 <i class="media-object fa fa-fw fa-5x {{ groups[tgroup].icon }}"></i>
             </a>
         </div>
         <div class="media-body">
-            <a href="{{url_for('config_section', section=groups[tgroup].section)}}">
+            <a href="{{url_for('admin.config_section', section=groups[tgroup].section)}}">
             <h4 class="media-heading">{{groups[tgroup].name}}</h4>
             </a>
             <p>{{groups[tgroup].desc}}</p>

@@ -6,7 +6,7 @@ several other administration tasks such as restarting the device or restarting s
 """
 
 from datetime import datetime
-from flask import render_template, abort, redirect
+from flask import Blueprint,render_template, abort, redirect
 from LibServer import app
 
 from configparser import ConfigParser
@@ -17,13 +17,7 @@ from configparser import ConfigParser
 # isn't. 
 #
 
-@app.route('/')
-def home():
-    """Renders the home page."""
-    return render_template(
-        'index.html',
-        title='Home Page',
-    )
+admin = Blueprint('admin',__name__,template_folder='templates')
 
 
 # Configuration sections
@@ -117,7 +111,7 @@ def get_sidebar():
     # We now have a worthwhile sidebar.
     return sidebar
 
-@app.route("/config")
+@admin.route("/")
 def config_index():
     """
     this route only lists the available sections.
@@ -184,7 +178,7 @@ def get_group_sections(config_reader, group):
 # What we want is to make the format
 # /config/<section>
 
-@app.route('/config/<section>')
+@admin.route('/<section>')
 def config_section(section):
     """
     This configures a specific section of the configuration file
@@ -319,7 +313,7 @@ def config_section(section):
     abort(500)
 
 
-@app.route('/config/write/<section>', methods=['POST'])
+@admin.route('/write<section>', methods=['POST'])
 def write_config(section):
     """
     this method takes a section and writes it to the configuratiom file as requested.
