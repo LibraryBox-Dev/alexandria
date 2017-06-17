@@ -18,7 +18,7 @@
     <Name>Alexandria</Name>
     <RootNamespace>LibServer</RootNamespace>
     <InterpreterId>MSBuild|PYTHON 3.6 VIRTUAL ENVIRONMENT|$(MSBuildProjectFullPath)</InterpreterId>
-    <CommandLineArguments>--baseconfig=default.ini --localconfig=local.ini --debug</CommandLineArguments>
+    <CommandLineArguments>-baseconfig default.ini -localconfig local.ini -debug</CommandLineArguments>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -34,9 +34,12 @@
     </Compile>
     <Compile Include="ConfigEngine\Generators.py" />
     <Compile Include="ConfigEngine\__init__.py" />
+    <Compile Include="LibServer\browser.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="runserver.py" />
     <Compile Include="LibServer\__init__.py" />
-    <Compile Include="LibServer\views.py" />
+    <Compile Include="LibServer\admin.py" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="ConfigEngine\" />
