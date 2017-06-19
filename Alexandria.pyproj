@@ -17,7 +17,7 @@
     <SuppressCollectPythonCloudServiceFiles>true</SuppressCollectPythonCloudServiceFiles>
     <Name>Alexandria</Name>
     <RootNamespace>LibServer</RootNamespace>
-    <InterpreterId>MSBuild|PYTHON 3.6 VIRTUAL ENVIRONMENT|$(MSBuildProjectFullPath)</InterpreterId>
+    <InterpreterId>MSBuild|venv-alexandria|$(MSBuildProjectFullPath)</InterpreterId>
     <CommandLineArguments>-baseconfig default.ini -localconfig local.ini -debug</CommandLineArguments>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
@@ -106,10 +106,10 @@
     <Content Include="LibServer\templates\layout.html" />
   </ItemGroup>
   <ItemGroup>
-    <Interpreter Include="venv\">
-      <Id>PYTHON 3.6 VIRTUAL ENVIRONMENT</Id>
+    <Interpreter Include="..\venv-alexandria\">
+      <Id>venv-alexandria</Id>
       <Version>3.6</Version>
-      <Description>venv (Python 3.6 (64-bit))</Description>
+      <Description>venv-alexandria (Python 3.6 (64-bit))</Description>
       <InterpreterPath>Scripts\python.exe</InterpreterPath>
       <WindowsInterpreterPath>Scripts\pythonw.exe</WindowsInterpreterPath>
       <PathEnvironmentVariable>PYTHONPATH</PathEnvironmentVariable>
