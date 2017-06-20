@@ -55,7 +55,7 @@ cp ${ABINDIR}/default.ini ${INSTDIR}/alexandria.ini
 # consumed by genconfig.
 echo "ALEXANDRIAPATH=${INSTDIR}">/etc/alexandria-env
 echo "LOCALCONFIG=${LOCALCONF}">>/etc/alexandria-env
-echo "VENV=${VENVDIR}"
+echo "VENV=${VENVDIR}">>/etc/alexandria-env
 
 
 # Now, we need to run the configuration generator script.
@@ -70,7 +70,7 @@ ${ABINDIR}/genconfig.sh
 # 
 # see also https://www.freedesktop.org/wiki/Software/systemd/NetworkTarget/
 #
-cat<<<EOF>${INSTDIR}/alexandria-config.service
+cat<<EOF>${INSTDIR}/alexandria-config.service
 [Unit]
 Description=Alexandria configuration
 DefaultDependencies=no
@@ -84,7 +84,7 @@ ExecStart=${ABINDIR}/genconfig.sh
 WantedBy=multi-user.target
 EOF
 
-cat<<<EOF>${INSTDIR}/alexandria-server.service
+cat<<EOF>${INSTDIR}/alexandria-server.service
 [Unit]
 Description=Alexandria librarian daemons
 after=network.target
