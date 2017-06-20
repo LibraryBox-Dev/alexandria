@@ -46,7 +46,6 @@ class ConfigEngine(object):
         self.searchpath = path
         self.parser = configparser.ConfigParser()
         for p in self.searchpath:
-            print(p)
             self.parser.read(p)
 
     def generator(self, description,needs_argument=False):
@@ -54,7 +53,7 @@ class ConfigEngine(object):
             name = func.__name__
             if name in self.generators:
                 raise ValueError("Can't add generator twice!")
-            self.generators[name] = {"description":description,"func": func, "needs_argument":needs_argument }
+            self.generators[name] = {"name":name,"description":description,"func": func, "needs_argument":needs_argument }
             return func
         return rGenerator
 
@@ -90,7 +89,7 @@ class ConfigEngine(object):
             return func
         return rDecorator
 
-    def runGenerator(self,name,argument=None):
+    def runGenerator(self,name,argument=None,outfile=sys.stdout):
         """
         Runs a specific generator.
 
@@ -160,14 +159,16 @@ class ConfigEngine(object):
         # Attempt to do the thing. 
         try:
             tGenerator["func"].__call__(*arguments)
-            print(buffer.getvalue())
+            print(buffer.getvalue(),file=outfile)
         except Exception as e:
             print("Failed to call {0}".format(name),file=sys.stderr)
             print(e, file=sys.stderr)
             print("This was bad, and potentially not your fault. Please check your configuration files.",file=sys.stderr)
 
     def getGenerators(self):
-        return list(self.generators.keys())
+        return self.generators
+    def getGenerator(self,name):
+        return self.generators[name]
 
     def getOption(self,section,option,transform=lambda k:k):
         """
