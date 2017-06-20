@@ -1,5 +1,9 @@
 #!/bin/bash
 
+if [ $(whoami) != "root" ]; then
+	echo "I need to be run as root!"
+	exit 1
+fi
 
 if [ -e $GITURL ]; then
 GITURL=http://github.com/indrora/Alexandria.git
@@ -36,9 +40,9 @@ git clone ${GITURL} ${ABINDIR}
 
 # Now, we're going to make sure that the virtualenv gets what it needs.
 
-virtualenv -p python3 ${INSTDIR}/env
+virtualenv -p python3 ${INSTDIR}/env > /dev/null
 
-$VENVPIP install -r ${ABINDIR}/requirements.txt
+$VENVPIP install -r ${ABINDIR}/requirements.txt > /dev/null
 
 # We now need to generate the configuration 
 
@@ -53,13 +57,34 @@ cp ${ABINDIR}/default.ini ${INSTDIR}/alexandria.ini
 
 # Now, we're going to write the install path to /etc/alexandria-env. This gets
 # consumed by genconfig.
-echo "ALEXANDRIAPATH=${INSTDIR}">/etc/alexandria-env
-echo "LOCALCONFIG=${LOCALCONF}">>/etc/alexandria-env
-echo "VENV=${VENVDIR}">>/etc/alexandria-env
+cat<<EOE>/etc/alexandria-env
+ALEXANDRIAPATH=${INSTDIR}
+BASECONFIG=${INSTDIR}/alexandria.ini
+LOCALCONFIG=${LOCALCONF}
 
+ABINDIR=${INSTDIR}/bin
+AVARDIR=${INSTDIR}/var
+ARUNDIR=${INSTDIR}/run
+
+VENVDIR=${INSTDIR}/env
+VENVBIN=${VENVDIR}/bin
+VENVPIP=${VENVBIN}/pip
+VENVPY=${VENVBIN}/python
+
+EOE
+
+# we need to set the file mode of our configuration tools
+
+echo "Setting executable bits where needed."
+
+chmod a+x ${ABINDIR}/genconfig.sh
+chmod a+x ${ABINDIR}/libctl.sh
+
+# By only using these as executables (and thin ones at that) the security risk is lessened.
 
 # Now, we need to run the configuration generator script.
 
+echo "Running configuration"
 ${ABINDIR}/genconfig.sh
 
 # We now need to make sure that the systemd configuration is correct. 
@@ -70,6 +95,8 @@ ${ABINDIR}/genconfig.sh
 # 
 # see also https://www.freedesktop.org/wiki/Software/systemd/NetworkTarget/
 #
+echo "Writing systemd units"
+
 cat<<EOF>${INSTDIR}/alexandria-config.service
 [Unit]
 Description=Alexandria configuration
@@ -97,13 +124,15 @@ EOF
 
 # Now we link them in the right way
 
+echo "Enabling systemd units"
+# By doing this, we usurp the need to add them. However, disabling them will
+# cause them to go away (this is why we symlinked!)
 ln -s ${INSTDIR}/alexandria-server.service /etc/systemd/system/alexandria-server.service
 ln -s ${INSTDIR}/alexandria-config.service /etc/systemd/system/alexandria-config.service
 
+echo "Reloading systemd's unit configuration"
 # Now, configure systemd to load them
 systemctl daemon-reload
-systemctl enable alexandria-config
-systemctl enable alexandria-server
 
 # ensure that hostapd and dnsmasq are disabled
 
