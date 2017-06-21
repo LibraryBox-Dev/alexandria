@@ -48,6 +48,11 @@ def debian_interface(buffer, iface):
     # If DHCP is enabled, it's simple
     ifacedict = engine.getSection("interface."+iface)
 
+    
+    if(toBool(ifacedict["enabled"])):
+        print("auto {0}".format(iface))
+
+
     if(toBool(ifacedict["dhcp"])):
         # Sanity check: Is this the interface for dnsmasq or hostapd?
         dnsmasq_iface = engine.getOption("network","dnsmasq_interface")
@@ -57,7 +62,6 @@ def debian_interface(buffer, iface):
 
         # This is a dhcp interface.
         writeLines(buffer, [
-            "auto {0}".format(iface),
             "allow-hotplug {0}".format(iface),
             "iface {0} inet dhcp".format(iface)
             ])
@@ -66,14 +70,19 @@ def debian_interface(buffer, iface):
     else:
         
         writeLines(buffer, [
-            
-            "auto {0}".format(iface),
             "iface {0} inet static".format(iface),
             "\taddress {0}".format(ifacedict["ip"]),
             "\tnetmask {0}".format(ifacedict["subnet_mask"]),
             ])
         if ifacedict["gateway"] != "":
             writeLines(buffer, ["\tgateway {0}".format(ifacedict["gateway"])])
+
+@engine.generator("Debian loopback interface")
+def debian_loopback(buffer):
+    writeLines(buffer,[
+        "auto lo"
+        "iface lo inet loopback"
+        ])
 
 @engine.assertConfig("general",["hostname"])
 @engine.assertConfig("network", [ 

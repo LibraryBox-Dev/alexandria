@@ -84,6 +84,9 @@ chmod a+x ${ABINDIR}/libctl.sh
 
 # Now, we need to run the configuration generator script.
 
+echo "Backing up /etc/network/interfaces"
+cp /etc/network/interfaces /etc/network/interfaces.dist
+
 echo "Running configuration"
 ${ABINDIR}/genconfig.sh
 

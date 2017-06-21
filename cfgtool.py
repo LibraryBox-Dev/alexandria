@@ -6,7 +6,7 @@ import os
 import argparse
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser("cfgtool",description="Generate configuration for Alexandria",allow_abbrev=False,add_help=True)
+    parser = argparse.ArgumentParser("cfgtool",description="Generate configuration for Alexandria",add_help=True)
     parser.add_argument("-localconfig",metavar="file",required=True, type=str,help="Local (user) configuration")
     parser.add_argument("-baseconfig",metavar="file",required=True,  type=str,help="System (default) configuration")
     parser.add_argument("-list",action='store_true',help="list all generators.")
