@@ -2,41 +2,41 @@
 
 . /etc/alexandria-env
 
-start()
+function start
 {
 	# start dnsmasq
 	dnsmasq \
-		-l ${ALEXANDRIAPATH}/run/dhcp-leases \
-		-c ${ALEXANDRIAPATH}/var/dnsmasq.conf \
-		-x ${ALEXANDRIAPATH}/run/dnsmasq.pid \
+		--dhcp-leasefile=${ARUNDIR}/dhcp-leases \
+		-C ${AVARDIR}/dnsmasq.conf \
+		--pid-file=${ARUNDIR}/dnsmasq.pid \
 		& > /dev/null
 	# start hostapd
 	hostapd \
-		-P ${ALEXANDRIAPATH}/run/hostapd.pid\
+		-B -P ${ALEXANDRIAPATH}/run/hostapd.pid\
 		${ALEXANDRIAPATH}/var/hostapd.conf \
 		&>/dev/null
-	${VENV}/bin/python3 runserver.py \
+	${VENVPY} runserver.py \
 		-baseconfig ${ALEXANDRIAPATH}/default.ini  \
 		-localconfig ${LOCALCONFIG}  \
-		-port 8888  \ 
+		-port 8888  \
+		-host 0.0.0.0 \
 		-pidfile ${ALEXANDRIAPATH}/run/libsrv.pid
-	nohup
 }
 
-stop() {
-	killall -15 `cat ${ALEXANDRIAPATH}/run/dnsmasq.pid` > /dev/null
-	killall -15 `cat ${ALEXANDRIAPATH}/run/hostapd.pid` > /dev/null
-	killall -15 `cat ${ALEXANDRIAPATH/run/libsrv.pid`   > /dev/null
+function stop {
+	killall -15 `cat ${ARUNDIR}/dnsmasq.pid` > /dev/null
+	killall -15 `cat ${ARUNDIR}/hostapd.pid` > /dev/null
+	killall -15 `cat ${ARUNDIR}/libsrv.pid`  > /dev/null
 }
 
 
-case @ $1 in
+case $1 in
 	"start")
-		start()
+		start
 		exit 0
 		;;
 	"stop")
-		stop()
+		stop
 		exit 0
 		;;
 	*)
