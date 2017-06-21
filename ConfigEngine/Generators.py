@@ -50,7 +50,7 @@ def debian_interface(buffer, iface):
 
     
     if(toBool(ifacedict["enabled"])):
-        print("auto {0}".format(iface))
+        print("auto {0}".format(iface),file=buffer)
 
 
     if(toBool(ifacedict["dhcp"])):
