@@ -96,7 +96,7 @@ def debian_interface(buffer, iface):
 @engine.generator("Debian loopback interface")
 def debian_loopback(buffer):
     writeLines(buffer,[
-        "auto lo"
+        "auto lo",
         "iface lo inet loopback"
         ])
 
