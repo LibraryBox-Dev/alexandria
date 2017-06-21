@@ -135,7 +135,7 @@ def dnsmasq(buffer):
     # we want the IP address of the interface.
     ipAddr = engine.getOption("interface."+network["dnsmasq_interface"], "ip")
     writeLines(buffer, ["address=/{0}/{1}".format(
-        engine.getOption("general","hostname")+engine.getOption("general","tld"),
+        engine.getOption("general","hostname")+"."+engine.getOption("general","tld"),
         ipAddr
         )])
     pass
