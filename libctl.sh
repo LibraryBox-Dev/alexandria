@@ -15,20 +15,24 @@ function start
 		-B -P ${ALEXANDRIAPATH}/run/hostapd.pid\
 		${ALEXANDRIAPATH}/var/hostapd.conf \
 		&>/dev/null
-	${VENVPY} runserver.py \
-		-baseconfig ${ALEXANDRIAPATH}/default.ini  \
-		-localconfig ${LOCALCONFIG}  \
-		-port 8888  \
-		-host 0.0.0.0 \
-		-pidfile ${ALEXANDRIAPATH}/run/libsrv.pid
+	
+	# TODO: Launch any addon services.
 }
 
 function stop {
-	killall -15 `cat ${ARUNDIR}/dnsmasq.pid` > /dev/null
-	killall -15 `cat ${ARUNDIR}/hostapd.pid` > /dev/null
-	killall -15 `cat ${ARUNDIR}/libsrv.pid`  > /dev/null
+	kill -15 `cat ${ARUNDIR}/dnsmasq.pid` > /dev/null
+	kill -15 `cat ${ARUNDIR}/hostapd.pid` > /dev/null
+	kill -15 `cat ${ARUNDIR}/libsrv.pid`  > /dev/null
 }
 
+function fastcgi
+{
+	${VENVPY} runserver.py \
+		-baseconfig ${BASECONFIG} \
+		-localconfig ${LOCALCONFIG} \
+		-fastcgi-socket /var/run/lighttpd/alexandria.socket \
+		-pidfile /var/run/alexandria-fastcgi.pid
+}
 
 case $1 in
 	"start")
@@ -39,8 +43,12 @@ case $1 in
 		stop
 		exit 0
 		;;
+	"fastcgi")
+		fastcgi
+		;;
 	*)
-		echo "Usage: $0 [start|stop]"
-		exit 0
+		echo "Usage: $0 [start|stop|fastcgi]"
+		echo "starts or stops library daemons, starts the library fastcgi daemon."
+		exit 1
 		;;
 esac
