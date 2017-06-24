@@ -2,7 +2,6 @@ import configparser
 import sys
 import io
 
-
 def toBool(value):
     truevals = ["1", 'true', 'yes', 'y', 'on']
     falsevals = ['0','false','no','n', 'off']

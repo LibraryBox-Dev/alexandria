@@ -9,6 +9,13 @@ TOOL="$VENVPY $ABINDIR/cfgtool.py -baseconfig ${BASECONFIG} -localconfig ${LOCAL
 # We're going to start by configuring Debian's interface file and getting things
 # set up here.
 
+export CFGTOOL=$TOOL
+export AVARDIR
+export ABINDIR
+export ARUNDIR
+export ALEXANDRIAPATH
+
+# We need to generate the config for supervisor here.
 
 $TOOL -outfile /etc/network/interfaces \
 	debian_loopback \
@@ -26,4 +33,4 @@ for c in $AVARDIR/conf.d/*; do
 done
 fi
 
-# End genconfig
+# End genconfig5

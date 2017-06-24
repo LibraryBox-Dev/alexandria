@@ -1,5 +1,37 @@
 #!/bin/bash
 
+cat<<EOF
+
+  :::.      :::    .,::::::    .,::      .: :::.   :::.    :::.:::::::-.  :::::::..   :::  :::.     
+  ;;`;;     ;;;    ;;;;''''    `;;;,  .,;;  ;;`;;  `;;;;,  `;;; ;;,   `';,;;;;``;;;;  ;;;  ;;`;;    
+ ,[[ '[[,   [[[     [[cccc       '[[,,[['  ,[[ '[[,  [[[[[. '[[ `[[     [[ [[[,/[[['  [[[ ,[[ '[[,  
+c$$$cc$$$c  $$'     $$""""        Y$$$P   c$$$cc$$$c $$$ "Y$c$$  $$,    $$ $$$$$$c    $$$c$$$cc$$$c 
+ 888   888,o88oo,.__888oo,__    oP"``"Yo,  888   888,888    Y88  888_,o8P' 888b "88bo,888 888   888,
+ YMM   ""` """"YUMMM""""YUMMM,m"       "Mm,YMM   ""` MMM     YM  MMMMP"`   MMMM   "W" MMM YMM   ""` 
+
+This script installs the Alexandria system. It WILL disable things that you potentially are using.
+
+This is going to:
+
+* Install python3, pip, virtualenv (if they aren't already)
+* Install supervisord
+* Install hostapd and dnsmasq (if they aren't already)
+* Place Alexandria into /opt/alexandria
+* add some Systemd services to get you up and going.
+
+If you do not wish for this to happen, stop now.
+
+EOF
+
+while true; do
+    read -p "Do you wish to install this program?" yn
+    case $yn in
+        [Yy]* ) echo "Installing!"; break;;
+        [Nn]* ) echo "Nope!"; exit;;
+        * ) echo "Please answer yes or no.";;
+    esac
+done
+
 if [ $(whoami) != "root" ]; then
 	echo "I need to be run as root!"
 	exit 1
@@ -28,7 +60,13 @@ VENVPY=${VENVBIN}/python
 
 echo "Installing dependencies"
 
-apt-get install -y python3 python3-virtualenv hostapd dnsmasq lighttpd
+echo "Installing python 3, pip, dnsmasq, nginx"
+apt-get install -y python3 python3-virtualenv python2 python-pip hostapd dnsmasq lighttpd
+
+echo "Installing supervisord"
+pip install supervisor
+
+echo "### DEPS INSTALLED. LET'S GET THIS LIBRARY BUILT!"
 
 echo "Cloning and installing Alexandria."
 
@@ -37,6 +75,8 @@ mkdir -p ${AVARDIR}
 mkdir -p ${ARUNDIR}
 
 git clone ${GITURL} ${ABINDIR}
+
+cp -r ${ABINDIR}/dist/* ${INSTDIR}/
 
 # Now, we're going to make sure that the virtualenv gets what it needs.
 
@@ -53,7 +93,6 @@ $VENVPIP install -r ${ABINDIR}/requirements.txt > /dev/null
 # The local configuration is, by default, in /etc/alexandria.ini
 
 touch $LOCALCONF
-cp ${ABINDIR}/default.ini ${INSTDIR}/alexandria.ini
 
 # Now, we're going to write the install path to /etc/alexandria-env. This gets
 # consumed by genconfig.
