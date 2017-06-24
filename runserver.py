@@ -17,8 +17,6 @@ from argparse import ArgumentParser
 
 if __name__ == '__main__':
 
-    print("LibServer lives in {0}".format(LibServer.__file__))
-
     parser = ArgumentParser("libserv",description="The Alexandria library service",add_help=True)
     parser.add_argument("-localconfig",metavar="file",required=True, type=str,help="Local (user) configuration")
     parser.add_argument("-baseconfig",metavar="file",required=True,  type=str,help="System (default) configuration")
@@ -27,6 +25,8 @@ if __name__ == '__main__':
     parser.add_argument("-port",type=int,default=5555)
     parser.add_argument("-no-admin",action='store_true',help="Disable administration panel")
     parser.add_argument("-pidfile",help="PIDFile to lock against", default="libsrv.pid")
+
+    parser.add_argument("-fcgisocket",type=str,default=None,help="FastCGI socket path.")
 
     parser.allow_abbrev=False
     args = parser.parse_args()
@@ -50,7 +50,9 @@ if __name__ == '__main__':
     app.debug = args.debug
 
     app.register_blueprint(browser)
-    app.register_blueprint(admin,url_prefix='/admin')
+    if(not args.noadmin):
+       app.register_blueprint(admin,url_prefix='/admin')
 
+    
     with PIDFile(args.pidfile):
         app.run(HOST, PORT)
