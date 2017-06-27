@@ -32,7 +32,16 @@
     <Compile Include="cfgtool.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ConfigEngine\Generators.py" />
+    <Compile Include="ConfigEngine\Generators\dnsmasq.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ConfigEngine\Generators\hostapd.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ConfigEngine\Generators\network.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ConfigEngine\Generators\__init__.py" />
     <Compile Include="ConfigEngine\__init__.py" />
     <Compile Include="LibServer\browser.py">
       <SubType>Code</SubType>
@@ -43,6 +52,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="ConfigEngine\" />
+    <Folder Include="ConfigEngine\Generators\" />
     <Folder Include="LibServer\" />
     <Folder Include="LibServer\static\" />
     <Folder Include="LibServer\static\css\" />

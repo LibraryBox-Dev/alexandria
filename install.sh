@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cat<<EOF
+cat<<'EOF'
 
   :::.      :::    .,::::::    .,::      .: :::.   :::.    :::.:::::::-.  :::::::..   :::  :::.     
   ;;`;;     ;;;    ;;;;''''    `;;;,  .,;;  ;;`;;  `;;;;,  `;;; ;;,   `';,;;;;``;;;;  ;;;  ;;`;;    
@@ -19,18 +19,8 @@ This is going to:
 * Place Alexandria into /opt/alexandria
 * add some Systemd services to get you up and going.
 
-If you do not wish for this to happen, stop now.
-
 EOF
 
-while true; do
-    read -p "Do you wish to install this program?" yn
-    case $yn in
-        [Yy]* ) echo "Installing!"; break;;
-        [Nn]* ) echo "Nope!"; exit;;
-        * ) echo "Please answer yes or no.";;
-    esac
-done
 
 if [ $(whoami) != "root" ]; then
 	echo "I need to be run as root!"
@@ -49,6 +39,8 @@ if [ -e $LOCALCONF ]; then
 LOCALCONF=/etc/alexandria.ini
 fi
 
+echo "Installing to ${INSTDIR} with configuration in ${LOCALCONF}"
+
 ABINDIR=${INSTDIR}/bin
 AVARDIR=${INSTDIR}/var
 ARUNDIR=${INSTDIR}/run
@@ -61,7 +53,7 @@ VENVPY=${VENVBIN}/python
 echo "Installing dependencies"
 
 echo "Installing python 3, pip, dnsmasq, nginx"
-apt-get install -y python3 python3-virtualenv python2 python-pip hostapd dnsmasq lighttpd
+apt-get install git python3 python3-virtualenv python2.7	 python-pip hostapd dnsmasq nginx
 
 echo "Installing supervisord"
 pip install supervisor
