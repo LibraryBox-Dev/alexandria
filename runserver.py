@@ -23,7 +23,7 @@ if __name__ == '__main__':
     parser.add_argument("-debug",action='store_true',help="run the server in debug mode")
     parser.add_argument("-host",type=str,default='localhost',help="Bind to this specific host")
     parser.add_argument("-port",type=int,default=5555)
-    parser.add_argument("-no-admin",action='store_true',help="Disable administration panel")
+    parser.add_argument("-no-admin",dest="noadmin",action='store_true',help="Disable administration panel")
     parser.add_argument("-pidfile",help="PIDFile to lock against", default="libsrv.pid")
 
     parser.add_argument("-fcgisocket",type=str,default=None,help="FastCGI socket path.")
