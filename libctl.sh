@@ -2,53 +2,37 @@
 
 . /etc/alexandria-env
 
-function start
-{
-	# start dnsmasq
-	dnsmasq \
-		--dhcp-leasefile=${ARUNDIR}/dhcp-leases \
-		-C ${AVARDIR}/dnsmasq.conf \
-		--pid-file=${ARUNDIR}/dnsmasq.pid \
-		& > /dev/null
-	# start hostapd
-	hostapd \
-		-B -P ${ALEXANDRIAPATH}/run/hostapd.pid\
-		${ALEXANDRIAPATH}/var/hostapd.conf \
-		&>/dev/null
-	
-	# TODO: Launch any addon services.
+
+# Try and run the command we're given
+
+echo "Attempting start of ${ALEXANDRIAPATH}/services.d/${1}.run"
+
+if [ ! -f ${ALEXANDRIAPATH}/services.d/${1}.run ]; then
+	echo "Failed to start part $1" > /dev/stderr
+	exit 1
+fi
+
+export ALEXANDRIAPATH
+export ARUNDIR
+export AVARDIR
+export ABINDIR
+
+export VENVDIR
+export VENVBIN
+export VENVPY
+
+
+_term () {
+	echo "Caught TERM signal!"
+	kill -TERM $child 2>/dev/null
+	$STOP
 }
 
-function stop {
-	kill -15 `cat ${ARUNDIR}/dnsmasq.pid` > /dev/null
-	kill -15 `cat ${ARUNDIR}/hostapd.pid` > /dev/null
-	kill -15 `cat ${ARUNDIR}/libsrv.pid`  > /dev/null
-}
+trap _term SIGTERM SIGKILL SIGINT EXIT
 
-function fastcgi
-{
-	${VENVPY} runserver.py \
-		-baseconfig ${BASECONFIG} \
-		-localconfig ${LOCALCONFIG} \
-		-fastcgi-socket /var/run/lighttpd/alexandria.socket \
-		-pidfile /var/run/alexandria-fastcgi.pid
-}
+. ${ALEXANDRIAPATH}/services.d/${1}.run
 
-case $1 in
-	"start")
-		start
-		exit 0
-		;;
-	"stop")
-		stop
-		exit 0
-		;;
-	"fastcgi")
-		fastcgi
-		;;
-	*)
-		echo "Usage: $0 [start|stop|fastcgi]"
-		echo "starts or stops library daemons, starts the library fastcgi daemon."
-		exit 1
-		;;
-esac
+$START &
+
+child=$!
+wait "$child"
