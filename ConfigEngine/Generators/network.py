@@ -3,6 +3,18 @@ from ConfigEngine import toBool,writeLines
 from ConfigEngine.Generators import engine
 
 
+@engine.generator("Debian interface configuration (combined")
+def debian_interfaces(buffer):
+
+    # Get the interfaces
+
+    interfaces = filter( lambda k: k.startswith("interface."), engine.getSections())
+
+    engine.runGenerator("debian_loopback", outfile=buffer)
+    for i in interfaces:
+        iface=i[len("interface.")::]
+        engine.runGenerator("debian_interface", argument=iface, outfile=buffer)
+
 @engine.namespace("interface")
 @engine.assertConfig(None, [ "type","enabled","dhcp","ip","subnet_mask","gateway" ])
 @engine.generator("Debian interface confguration (single interface)",True)
