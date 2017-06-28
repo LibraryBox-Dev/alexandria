@@ -1,0 +1,4 @@
+. /etc/alexandria-env
+
+START="${VENVPY} ${ABINDIR}/runserver.py -fcgisocket ${ARUNDIR}/alexandria.fcgi -localconfig ${LOCALCONFIG} -baseconfig ${BASECONFIG}"
+STOP=""

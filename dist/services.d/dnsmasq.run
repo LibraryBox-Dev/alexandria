@@ -1,0 +1,3 @@
+. /etc/alexandria-env
+START="dnsmasq -C ${AVARDIR}/dnsmasq.conf -d"
+STOP=""

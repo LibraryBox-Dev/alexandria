@@ -1,2 +1,4 @@
 #!/bin/bash
-hostapd ${AVARDIR}/hostapd.conf
+. /etc/alexandria-env
+START="hostapd ${AVARDIR}/hostapd.conf"
+STOP=""

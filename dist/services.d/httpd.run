@@ -1,0 +1,3 @@
+. /etc/alexandria-env
+START="/usr/sbin/nginx -p ${ALEXANDRIAPATH} -c var/nginx.conf"
+STOP=""
