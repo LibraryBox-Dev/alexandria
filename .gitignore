@@ -1,5 +1,7 @@
 ## Virtual env
 
+*.swp
+
 venv/
 venv/**
 
