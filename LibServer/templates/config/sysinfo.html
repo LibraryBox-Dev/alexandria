@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<h1>System Information</h1>
+<div class="row">
+	<div class="col-md-4">Kernel version:</div>
+	<div class="col-md-8">{{info.kernel}}</div>
+</div>
+<div class="row">
+	<div class="col-md-4">Distribution</div>
+	<div class="col-md-8">{{info.release}}</div>
+</div>
+
+<h2>Disks</h2>
+
+<ul>
+	{% for disk in info.disks %}
+	<li>{{disk.NAME}} ({{disk.SIZE}} disk)</li>
+	{% if disk.CHILDREN %}
+	<ul>
+	{% for child in disk.CHILDREN %}
+	<li> {{ child.NAME }} ({{child.SIZE}} label "{{ child.LABEL  }}"  )</li>
+	{% endfor %}
+	</ul>
+	{% endif %}
+	{% endfor %}
+</ul>
+{% endblock %}

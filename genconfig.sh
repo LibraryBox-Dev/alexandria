@@ -24,6 +24,8 @@ $TOOL -outfile ${ARUNDIR}/services
 
 . ${ARUNDIR}/services
 
+$TOOL -outfile /etc/network/interfaces debian_interfaces
+
 #$TOOL -outfile /etc/network/interfaces \
 #	debian_loopback \
 #	debian_interface:wlan0 \

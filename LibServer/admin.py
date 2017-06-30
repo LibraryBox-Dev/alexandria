@@ -6,7 +6,7 @@ several other administration tasks such as restarting the device or restarting s
 """
 
 from datetime import datetime
-from flask import Blueprint,render_template, abort, redirect
+from flask import Blueprint,render_template, abort, redirect, url_for, request,session
 from LibServer import app
 
 from configparser import ConfigParser
@@ -23,7 +23,7 @@ admin = Blueprint('admin',__name__,template_folder='templates')
 # Configuration sections
 
 configuration_groups = {
-    "general":{
+    "00general":{
         "name":"General configuration",
         "short":"General",
         "desc":"Overall configuration of your box",
@@ -32,7 +32,7 @@ configuration_groups = {
         "type":"single",
         "template":"cfg_general.html"
         },
-    "network": {
+    "11network": {
         "name":"Network (general)",
         "short":"Network",
         "desc":"Configure DNS and other general network configuration",
@@ -53,7 +53,7 @@ configuration_groups = {
 #        "template":None,
 #        "leaf":"Interface"
 #        },
-    "services":{
+    "22services":{
         "name":"Service Configuration",
         "short":"Services",
         "desc":"Services you can run on your box",
@@ -64,7 +64,7 @@ configuration_groups = {
         "template":"cfg_service.html",
         "breadcrumb":"Service"
         },
-    "storage":{
+    "33storage":{
         "name":"Storage configuration",
         "short":"Storage",
         "desc":"Content storage for your users",
@@ -310,10 +310,11 @@ def config_section(section):
         except Exception as e:
             continue
     # this should not be a 5xx -- should it?
+    print("Fallback: There was no template that I could render!")
     abort(500)
 
 
-@admin.route('/write<section>', methods=['POST'])
+@admin.route('/write/<section>', methods=['POST'])
 def write_config(section):
     """
     this method takes a section and writes it to the configuratiom file as requested.
@@ -325,4 +326,104 @@ def write_config(section):
     that will give us the file we want to write to, as the primary config is likely in a read only place.
 
     """
-    return(redirect(url_for('config_section', section=section)))
+
+
+    # We're going to load the configuration from the local (non-default) config first
+
+    localconf = ConfigParser()
+    localconf.read(app.config["localConfigPath"])
+
+    # make sure that the section exists in the local configuration
+
+    if not localconf.has_section(section):
+        localconf.add_section(section)
+
+    # walk through the configuration options. 
+    # There is one thing that we have to filter out anything that has a checkbox,
+    # since the only way we know a checkbox is there is if the checkbox is included 
+    # in the POST data.
+
+    checkbox_fields = list(filter( lambda field: field.startswith("checkbox_"), request.form.keys()  ))
+
+    # Right, we have the list of fields that have checkboxes attached to them
+    # I'm going to, tentatively, set these all to false.
+
+    changes = {}
+    for field in checkbox_fields:
+        # We need to make sure that the proper field name is pulled.
+        fieldname = field[len("checkbox_")::]
+        changes[fieldname] = "false"
+
+    # Now we walk through all non-checkbox marker fields and get their values into the changes.
+
+    print("Keys in the request:", list(request.form.keys()) );
+ 
+    data_fields = list(filter(lambda field: not field.startswith("checkbox_"), request.form.keys() ))
+
+    print("Keys not checkbox:", data_fields)
+
+    for field in data_fields:
+        if "checkbox_"+field in checkbox_fields:
+            changes[field] = "true"
+        else:
+            changes[field] = str(request.form[field])
+
+    # Now we zip everything up into the configuration file
+
+    print("Making the following changes to the local configuration:")
+    print(changes)
+
+    for field in changes:
+        localconf.set(section, field, changes[field])
+
+    with open(app.config["localConfigPath"], 'w') as conf_fd:
+        localconf.write(conf_fd)
+
+    # The file is now written.
+
+    # Now we should have everything working.
+
+    return(redirect(url_for('.config_section', section=section)))
+
+
+import subprocess
+import re
+
+
+@admin.route("/sysinfo")
+def sysinfo():
+    """
+    A little helper panel. This is intended to help find disks and other information about the system.
+
+    This panel displays:
+    
+    * The list of disks
+    * the current kernel
+    * the distribution (via lsb_release)
+
+    all this work is because Pi debian doesn't have an up to date version of lsblk
+
+    Seriously, it's had a JDON output for a long time now. 
+    """
+
+    keyre = re.compile('(?:(?P<name>\w+)\=\"(?P<value>[^\"]*)\")')
+
+    info = {
+            "kernel": str(subprocess.check_output(["uname", "-a"]).splitlines()[0]),
+            "release": str(subprocess.check_output(["lsb_release", "-sd"]).splitlines()[0])
+            }
+    # To get the list of disks, we need to use blkid and parse its results. 
+    devs_raw = subprocess.check_output(["lsblk","-P","-o","NAME,TYPE,SIZE,LABEL"])
+    devs_split = map(str,devs_raw.splitlines())
+    devs_dicts = list(map(dict,map(keyre.findall,devs_split)))
+    # Now we need to go through and clean those up
+    disks = list(filter( lambda k: k["TYPE"]=="disk", devs_dicts))
+    disk_tree = []
+    for d in disks:
+        parts = list(filter( lambda k: k["TYPE"] == "part" and k["NAME"].startswith(d["NAME"]),devs_dicts))
+        if(len(parts)>1):
+            d["CHILDREN"] = parts
+        disk_tree.append(d)
+
+    info["disks"] = disk_tree
+    return render_template("config/sysinfo.html", title="System Information",info=info)

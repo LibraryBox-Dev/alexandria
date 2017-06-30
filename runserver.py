@@ -8,6 +8,9 @@ from os import environ
 import LibServer
 from LibServer import app
 
+
+import random, string
+
 from LibServer.admin import admin
 from LibServer.browser import browser
 
@@ -46,6 +49,11 @@ if __name__ == '__main__':
     # This is being supplied by the command line
 
     app.config["configfiles"] = [args.baseconfig, args.localconfig]
+    app.config["localConfigPath"] = args.localconfig
+    app.config["baseConfigPath"] = args.baseconfig
+
+    app.secret_key = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(32))
+
 
     app.debug = args.debug
 
