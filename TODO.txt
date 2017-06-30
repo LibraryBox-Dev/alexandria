@@ -1,0 +1,51 @@
+TODOs:
+
+* Installer needs to add supervisor to the systemd client
+* Installer needs to add a user to the system for library services and content to live on
+-> this needs to be optional, as there needs to be some flex in the configuration.
+* Installer needs to make sure that the created user can own the files.
+
+* Content directory needs to be browsable
+ - Browser needs to be written.
+* Uploading needs to be done. 
+ -> How should we handle this? Thoughs below.
+* Admin panel needs password protection
+* System info panel still shows bstrings --> Need to make sure that we convert from bstring to ASCII?
+
+Thoughts on fs browser:
+
+* This should look like a fairly standard browser. 
+* Should we look at including a thumbnailing engine?
+* Ignore dot-files? -> yes, they are special.
+
+Thoughts on disks: 
+ 
+We should have a way to auto-find disks or a way to add disks as needed. This could be done via the admin panel or other means. Disks need to be mounted sync. This means that uploads are potentially very slow but it is safe to remove disks at any time. This is safe when used with flash disks, but has a write-time penalty for uploads (especially large ones).
+
+Uploads:
+
+I suspect this needs to be changed from a service option to a general option. This change would make it much easier because now the FS browser can simply do a check that if it's turned on, we show it, otherwise only show it if the session has a "logged_in" value.
+
+This also does add some complexity, but the configuration system should be able to handle it.
+
+Front page:
+
+We should show some useful things on the front page, like the amount of content that is in the repository as it stands. I don't know if du has the ability to summarize mount points, but it wouldn't surprise me.
+
+I should check this. Having some statistics there ("Now serving XX.y Gigabytes of content!) would be nice, plus having a nice picture there would be a good idea. 
+
+A good idea would be to list the default collections (disks) that are currently available.
+
+There needs to be some way to control the content of the front page. I don't have a good idea on that at the moment. I'll have to think on that one. 
+
+Services: 
+
+Currently, dnsmasq and hostapd are the two big services I have for the world. I need to get a simple service set up to demonstrate this feature. I've considered an IRC server but I'm not sure that's what I want to work with.
+
+Nginx configuration needs to not live in the vardir unless it's being configured dynamically. It probably should if I'm going to be making use of the static files hosting...
+
+It is possible I could offer subdomain access to certain servieces. That's an idea, but not one that I really want to look into at the moment. 
+
+I need to make sure that there's a user set up for these. On the Pi, this can be 'pi' or we can make a new user ("librarian" or something) that owns the disks and configuration files. 
+
+
