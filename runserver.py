@@ -7,15 +7,10 @@ Alexandria development server
 from os import environ
 import LibServer
 from LibServer import app
-
-
 import random, string
-
 from LibServer.admin import admin
 from LibServer.browser import browser
-
 from pidfile import PIDFile
-
 from argparse import ArgumentParser
 
 if __name__ == '__main__':
@@ -52,12 +47,15 @@ if __name__ == '__main__':
     app.config["localConfigPath"] = args.localconfig
     app.config["baseConfigPath"] = args.baseconfig
 
+    app.config.load(args.baseconfig, args.localconfig)
+
+
     app.secret_key = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(32))
 
 
     app.debug = args.debug
 
-    app.register_blueprint(browser)
+    app.register_blueprint(browser,url_prefix='/browse')
     if(not args.noadmin):
        app.register_blueprint(admin,url_prefix='/admin')
 

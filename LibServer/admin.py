@@ -71,6 +71,8 @@ configuration_groups = {
         "type":"single",
         "icon":"fa fa-hdd-o",
         "section": "storage",
+        "type":"multi",
+        "namespace":"storage",
         "template":"cfg_storage.html",
         "breadcrumb":"Location"
         }
