@@ -1,0 +1,23 @@
+{% extends "config/base.html" %}
+
+{% block config_page_content  %}
+
+<h2>Dnsmasq</h2>
+
+{{field("dnsmasq_enable", "Enable DNSMasq", "checkbox")}}
+{{field("dnsmasq_interface", "DNSMasq interface", "text")}}
+{{field("dnsmasq_start_address", "Starting IP", "text")}}
+{{field("dnsmasq_end_address", "Ending IP", "text")}}
+{{field("dnsmasq_subnet_mask", "Subnet mask", "text")}}
+{{field("dnsmasq_lease_time", "Lease time (in minutes)", "text")}}
+{{field("hostapd_enable", "Enable Hostapd", "checkbox")}}
+{{field("hostapd_interface", "interface", "text")}}
+{{field("hostapd_country", "Country", "text")}}
+{{field("hostapd_channel", "802.11 channel", "text")}}
+{{field("hostapd_ssid", "SSID", "text")}}
+{{field("hostapd_wpa", "Enable WPA security", "checkbox")}}
+{{field("hostapd_psk", "WPA Passphrase", "text")}}
+
+{{savebutton()}}
+
+{% endblock %}

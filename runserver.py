@@ -60,5 +60,9 @@ if __name__ == '__main__':
        app.register_blueprint(admin,url_prefix='/admin')
 
     
-    with PIDFile(args.pidfile):
+    if( app.debug):
+        print("Can't run with PIDfile and debug; ignoring pidfile")
         app.run(HOST, PORT)
+    else:
+        with PIDFile(args.pidfile):
+            app.run(HOST, PORT)

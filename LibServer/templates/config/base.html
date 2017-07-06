@@ -22,6 +22,18 @@
    <button type="submit" class="btn btn-primary">Save</button> <button type="reset" class="btn btn-warning">Reset</button>
  </div>
  </div>{%- endmacro %}
+
+{% macro dropdown(name, label, options) -%}
+<div class="form-group">
+ <label for="{{name}}" class="col-md-3 control-label">{{label}}</label>
+ <div class="col-md-9">
+	 <select name="{{name}}" class="form-control" id="{{name}}">{% for option_key in options %}
+		<option value="{{option_key}}">{{options[option_key]}}</option>
+		 {%endfor%}
+	 </select>
+ </div>
+ </div>
+{%- endmacro %}
 {% block content %}
 
 <!-- Begin configuration area container. -->

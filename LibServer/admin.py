@@ -290,29 +290,17 @@ def config_section(section):
     if 'namespace' in cgroupdict:
         templates.append('cfg_{0}.html'.format(cgroupdict['namespace']))
     templates.append('cfg_generic.html')
-    for template in templates:
-        # at this point, we are going to try rendering each template in order
-        # and move on if there is a problem.
-        # It's not an elegant solution but it works.
 
-        # passed to template:
-        # current sectiom
-        # list of options in section
-        # list of section groups
-        # possibly list of child sections
-
-        try:
-            return render_template(
-                "config/"+template,
-                sidebar=sidebar,
-                current_group=current_group,
-                current_section=section,
-                values=config_options_cooked
-                )
-        except Exception as e:
-            continue
-    # this should not be a 5xx -- should it?
-    print("Fallback: There was no template that I could render!")
+    try:
+        return render_template(list(map(lambda l:"config/"+l, templates)),
+            sidebar=sidebar,
+            current_group=current_group,
+            current_section=section,
+            values=config_options_cooked
+            )
+    except Exception as e:
+        if app.debug:
+            raise e
     abort(500)
 
 
@@ -321,12 +309,9 @@ def write_config(section):
     """
     this method takes a section and writes it to the configuratiom file as requested.
 
-    we can get away with this because we read the configuration every time we load a page. 
-    this means we always have a fresh copy of the configuration. 
-
-    TODO: we need to implement this. This needs the app search paths work done so this works.
-    that will give us the file we want to write to, as the primary config is likely in a read only place.
-
+    When we do this, we're going to "taint" the configuration such that it will show a
+    notice that the configuration has changed and configuration files need to be generated
+    at boot time.
     """
 
 
@@ -371,9 +356,6 @@ def write_config(section):
             changes[field] = str(request.form[field])
 
     # Now we zip everything up into the configuration file
-
-    print("Making the following changes to the local configuration:")
-    print(changes)
 
     for field in changes:
         localconf.set(section, field, changes[field])
