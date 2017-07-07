@@ -22,38 +22,90 @@ This is going to:
 EOF
 
 
-if [ $(whoami) != "root" ]; then
-	echo "I need to be run as root!"
-	exit 1
+
+# By default, we are not working in a developer environment.
+# This means that by default, we're doing an installation in
+# the /opt/alexandria directory and we have full system root
+# priveleges. 
+
+DEVENV=0
+if [ -d .git ]; then
+	DEVENV=1
 fi
 
 if [ -e $GITURL ]; then
 GITURL=http://github.com/indrora/Alexandria.git
 fi
 
-if [ -e $INSTDIR ]; then
-INSTDIR=/opt/alexandria
+if [ $DEVENV -eq 1 ]; then
+	# We need to make sure that we make the "install" directory be the dist/ directory.
+	# Thid also means that LOCALCONF will be set to a file that is ignored in .gitignore
+	# so that we can make sure to load it later.
+
+	# words words words are cooool.
+
+	INSTDIR=$(pwd)/dist
+	LOCALCONF=$(pwd)/local.ini
+else
+    if [ -e $INSTDIR ]; then
+    INSTDIR=/opt/alexandria
+    fi
+
+    if [ -e $LOCALCONF ]; then
+    LOCALCONF=/etc/alexandria.ini
+    fi
+
 fi
 
-if [ -e $LOCALCONF ]; then
-LOCALCONF=/etc/alexandria.ini
-fi
+
+# if we're doing things in a developer type environment, we're going to need
+# to use the current directory (assuming it's a .git repo) and do some
+# slight changes to the installation.
 
 echo "Installing to ${INSTDIR} with configuration in ${LOCALCONF}"
 
-ABINDIR=${INSTDIR}/bin
-AVARDIR=${INSTDIR}/var
-ARUNDIR=${INSTDIR}/run
+if [ $DEVENV -eq 1 ]; then
+	ABINDIR=$(pwd)
+else
+	ABINDIR=${INSTDIR}/bin
+	AVARDIR=${INSTDIR}/var
+	ARUNDIR=${INSTDIR}/run
+fi
+
 
 VENVDIR=${INSTDIR}/env
 VENVBIN=${VENVDIR}/bin
 VENVPIP=${VENVBIN}/pip
 VENVPY=${VENVBIN}/python
 
+
+if [ $DEVENV -eq 1 ]; then
+    echo "skipping root check."
+else
+    if [ $(whoami) != "root" ]; then
+       echo "I need to be run as root!"
+       exit 1
+    fi
+fi
+
+
+
 echo "Installing dependencies"
 
+if [ $DEVENV -eq 1 ]; then
+        echo "Make sure that the following packages are installed: python2.7, python3, pip, virtualenv, git"
+else
 echo "Installing python 3, pip, dnsmasq, nginx"
-apt-get install git python3 python3-virtualenv python2.7	 python-pip hostapd dnsmasq nginx
+apt-get install -y git python3 python3-virtualenv python2.7 python-pip
+fi
+
+
+if [ $DEVENV -eq 1 ]; then
+    echo "Not installing hostapd and friends."
+else
+   apt-get install -y hostapd dnsmasq nginx
+fi
+
 
 echo "Installing supervisord"
 pip install supervisor
@@ -62,13 +114,13 @@ echo "### DEPS INSTALLED. LET'S GET THIS LIBRARY BUILT!"
 
 echo "Cloning and installing Alexandria."
 
-mkdir -p ${INSTDIR}
-mkdir -p ${AVARDIR}
-mkdir -p ${ARUNDIR}
-
-git clone ${GITURL} ${ABINDIR}
-
-cp -r ${ABINDIR}/dist/* ${INSTDIR}/
+if [ -e $DEVENV ]; then
+    mkdir -p ${INSTDIR}
+    mkdir -p ${AVARDIR}
+    mkdir -p ${ARUNDIR}
+    git clone ${GITURL} ${ABINDIR}
+    cp -r ${ABINDIR}/dist/* ${INSTDIR}/
+fi
 
 # Now, we're going to make sure that the virtualenv gets what it needs.
 
@@ -88,16 +140,25 @@ touch $LOCALCONF
 
 # Now, we're going to write the install path to /etc/alexandria-env. This gets
 # consumed by genconfig.
-cat<<EOE>/etc/alexandria-env
+
+ENVPATH=/etc/alexandria-env
+
+if [ $DEVENV -eq 1 ]; then
+	ENVPATH=${INSTDIR}/alexandria-env
+fi
+
+echo "Environment file is in ${ENVPATH}"
+
+cat<<EOE>$ENVPATH
 ALEXANDRIAPATH=${INSTDIR}
 BASECONFIG=${INSTDIR}/alexandria.ini
 LOCALCONFIG=${LOCALCONF}
 
-ABINDIR=${INSTDIR}/bin
-AVARDIR=${INSTDIR}/var
+ABINDIR=${ABINDIR}
+AVARDIR=${AVARDIR}
 ARUNDIR=${INSTDIR}/run
 
-VENVDIR=${INSTDIR}/env
+VENVDIR=${VENVDIR}
 VENVBIN=${VENVDIR}/bin
 VENVPIP=${VENVBIN}/pip
 VENVPY=${VENVBIN}/python
@@ -115,11 +176,15 @@ chmod a+x ${ABINDIR}/libctl.sh
 
 # Now, we need to run the configuration generator script.
 
-echo "Backing up /etc/network/interfaces"
-cp /etc/network/interfaces /etc/network/interfaces.dist
+if [ $DEVENV -eq 1 ]; then
+	echo "you should run the configuration scripts..."
+else
+	echo "Backing up /etc/network/interfaces"
+	cp /etc/network/interfaces /etc/network/interfaces.dist
+	echo "Running configuration"
+	${ABINDIR}/genconfig.sh
 
-echo "Running configuration"
-${ABINDIR}/genconfig.sh
+fi
 
 # We now need to make sure that the systemd configuration is correct. 
 # This means we need to generate systemd unit files. 
@@ -158,20 +223,26 @@ EOF
 
 # Now we link them in the right way
 
-echo "Enabling systemd units"
-# By doing this, we usurp the need to add them. However, disabling them will
-# cause them to go away (this is why we symlinked!)
-ln -s ${INSTDIR}/alexandria-server.service /etc/systemd/system/alexandria-server.service
-ln -s ${INSTDIR}/alexandria-config.service /etc/systemd/system/alexandria-config.service
+if [ $DEVENV -eq 1 ]; then
+    echo "Systemd units should be linked to /etc/systemd/system as neccesary."
+else
 
-echo "Reloading systemd's unit configuration"
-# Now, configure systemd to load them
-systemctl daemon-reload
+    echo "Enabling systemd units"
+    # By doing this, we usurp the need to add them. However, disabling them will
+    # cause them to go away (this is why we symlinked!)
+    ln -s ${INSTDIR}/alexandria-server.service /etc/systemd/system/alexandria-server.service
+    ln -s ${INSTDIR}/alexandria-config.service /etc/systemd/system/alexandria-config.service
 
-# ensure that hostapd and dnsmasq are disabled
+    echo "Reloading systemd's unit configuration"
+    # Now, configure systemd to load them
+    systemctl daemon-reload
 
-echo "Turning off distribution hostapd and dnsmasq"
-systemctl disable hostapd
-systemctl disable dnsmasq
+    # ensure that hostapd and dnsmasq are disabled
+
+    echo "Turning off distribution hostapd and dnsmasq"
+    systemctl disable hostapd
+    systemctl disable dnsmasq
+
+fi
 
 # This is all we have at the moment
