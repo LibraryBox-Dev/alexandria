@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+{% block content %}
+<h1>{{where}}</h1>
+
+<div class="container-fluid">
+{% if show_updir %}
+<div class="row"><div class="col-xs-12"><a href="../"><i class="fa fa-fw fa-up"></i> Parent directory</a></div></div>
+{%endif%}
+{% for dir in listing_dirs %}
+<div class="row">
+    <div class="col-sm-8 col-xs-12">
+<a href="{{dir}}/"><i class="fa fa-fw fa-folder"></i> {{dir}} </a>
+    </div>
+    <div class="col-sm-4 hidden-xs">Directory</div>
+</div>
+{% endfor %}
+
+{% for file in listing_files %}
+<div class="row">
+    <div class="col-sm-8 col-xs-7">
+        <a href="{{url_for('browser.fetch_file', name=where+'/'+file.name)}}">
+        <i class="fa fa-fw fa-file"></i>
+        {{file.name}
+        </a>
+        <div class="pull-right"> <a href="#"><i class="fa fa-fw fa-info"></i></a> | <a href="#"><i class="fa fa-fw fa-download"></i></a></div>
+        </div>
+    <div class="col-sm-2 col-xs-1">File</div>
+    <div class="col-sm-2 col-xs-1">{{file.size}}</div>
+</div>
+{%endfor%}
+</div>
+
+{% endblock %}
