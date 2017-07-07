@@ -22,6 +22,9 @@ class LibConfig(Config):
         self.parser.read(baseconfig)
         self.parser.read(localconfig)
 
+        self.localconf = localconfig
+        self.baseconf = baseconfig
+        
 
 
 class LibFlask(Flask):
