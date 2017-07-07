@@ -268,3 +268,12 @@ __pycache__/
 *.pyc
 local.ini
 libsrv.pid
+
+
+# Distribution files
+dist/run
+dist/bin
+dist/var
+dist/*.service
+dist/alexandria-env
+dist/env
