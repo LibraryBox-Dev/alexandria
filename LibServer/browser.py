@@ -31,29 +31,49 @@ def browse(where=""):
     This takes a path and turns it into a list of folders, etc.
     """
     basepath=app.config.get("storage", "path")
+    
+
+    #TODO: Make this something meaningful. There needs to be a good explanation as to what has happened
+    # to the user instead of just shoving a "We don't find anything here" message.
+    if(os.path.exists(os.path.join(basepath,'.uninitialized'))):
+        abort(500)
+    
+    
     # Now, we're going to join the two together and normalize path
     fullpath = safe_join(basepath, where)
+
+    # TODO: This could be nicer. 
+    if(not os.path.exists(fullpath)):
+        abort(404)
+    
+
     # Now, we can read through the directory.
     dir_contents = list( filter(lambda fn: not fn.startswith("."), os.listdir(fullpath)))
 
+    # Separate the files from the directories.
+    # We do this so that we can show the directories first, then the files.
+    # We also do this so that we can (maybe later?) show a sidebar with files vs.
+    # a list of files + directories-- maybe even have them at the same time?
     dirs = list(filter(lambda o: os.path.isdir(os.path.join(fullpath,o)), dir_contents))
     files = list(filter(lambda o: os.path.isfile(os.path.join(fullpath,o)), dir_contents))
 
-    # Handle the files. We need each one to know its size and filename.
-
+    # We're now going to split apart the path so that we can build breadcrumbs.
+    # This might not really be the *worst* option, but
+    # TODO: This probably could use some refinement.
     splits = where.lstrip('/').rstrip('/').split('/')
-
     crumbs = []
-
+    # We're going to keep our current path in. It's empty by default,
+    # but we're going to solve that. 
     cWhere = ''
-
     for part in splits:
         if cWhere=='':
             cWhere = part
         else:
             cWhere = '/'.join([cWhere,part])
         crumbs.append( ( part, cWhere ) )
-
+    
+    # This function is what we're going to later pass into map() against all our files. We can expand
+    # on it later if we need more information out of stat()
     def file_record_maker(filename):
         record = { "name": filename }
         statx = os.stat(os.path.join(fullpath,filename))
@@ -61,16 +81,15 @@ def browse(where=""):
         record["size_b"] = statx.st_size
         return record
     
+    # And here we go, mapping it against all our files, sorted by name.
     file_records = list(map(file_record_maker, sorted(files)))
 
-    # We get to cheat badly. Oh so badly. 
-    # We need no way to handle getting the files! FANTASTIQUE! 
+    # We check here if we should show the 'up' direction. 
 
-    # We do however need to include a way to handle showing "up a directory" and other fun stuff.
+    show_up = (where != '')
 
-    show_up = False
-    if(where != ""):
-        show_up = True
+    # Now, render our directory listing.
+    # There's not much else to say here. 
     return render_template("browser/listing.html",
         listing_files=file_records,
         listing_dirs=sorted(dirs),
