@@ -34,12 +34,25 @@ def browse(where=""):
     # Now, we're going to join the two together and normalize path
     fullpath = safe_join(basepath, where)
     # Now, we can read through the directory.
-    dir_contents = list(os.listdir(fullpath))
+    dir_contents = list( filter(lambda fn: not fn.startswith("."), os.listdir(fullpath)))
 
     dirs = list(filter(lambda o: os.path.isdir(os.path.join(fullpath,o)), dir_contents))
     files = list(filter(lambda o: os.path.isfile(os.path.join(fullpath,o)), dir_contents))
 
     # Handle the files. We need each one to know its size and filename.
+
+    splits = where.lstrip('/').rstrip('/').split('/')
+
+    crumbs = []
+
+    cWhere = ''
+
+    for part in splits:
+        if cWhere=='':
+            cWhere = part
+        else:
+            cWhere = '/'.join([cWhere,part])
+        crumbs.append( ( part, cWhere ) )
 
     def file_record_maker(filename):
         record = { "name": filename }
@@ -62,7 +75,8 @@ def browse(where=""):
         listing_files=file_records,
         listing_dirs=sorted(dirs),
         where=where.rstrip('/').lstrip('/'),
-        show_updir=show_up
+        show_updir=show_up,
+        crumbs=crumbs
         )
 
 

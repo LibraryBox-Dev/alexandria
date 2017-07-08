@@ -1,10 +1,17 @@
 {% extends "layout.html" %}
 {% block content %}
-<h1>{{where}}</h1>
+
+<ul class="breadcrumb hidden-xs">
+    <li><a href="{{url_for('home')}}">Home</a></li>
+    <li><a href="{{url_for('browser.browse')}}">Browse</a></li>
+    {% for (crumb,where) in crumbs %}
+        <li><a href="{{url_for('browser.browse', where=where)}}">{{crumb}}</a></li>
+    {%endfor%}
+</ul>
 
 <div class="container-fluid">
 {% if show_updir %}
-<div class="row"><div class="col-xs-12"><a href="../"><i class="fa fa-fw fa-up"></i> Parent directory</a></div></div>
+<div class="row"><div class="col-xs-12"><a href="../"><i class="fa fa-fw fa-arrow-up"></i> Parent directory</a></div></div>
 {%endif%}
 {% for dir in listing_dirs %}
 <div class="row">
@@ -20,7 +27,7 @@
     <div class="col-sm-8 col-xs-7">
         <a href="{{url_for('browser.fetch_file', name=where+'/'+file.name)}}">
         <i class="fa fa-fw fa-file"></i>
-        {{file.name}
+        {{file.name}}
         </a>
         <div class="pull-right"> <a href="#"><i class="fa fa-fw fa-info"></i></a> | <a href="#"><i class="fa fa-fw fa-download"></i></a></div>
         </div>
