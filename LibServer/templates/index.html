@@ -1,10 +1,61 @@
-{% extends "layout.html" %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+ 
+    <title>Alexandria</title>
 
-{% block content %}
+    <!-- Bootstrap core CSS -->
+    <link href="{{url_for('static', filename='css/bootstrap.min.css')}}" rel="stylesheet">
 
-<div class="jumbotron">
-    <h1>Welcome to Alexandria!</h1>
-    <p class="lead">You're about to read you some things. </p>
-</div>
+    <!-- Custom styles for this template -->
+    <link href="{{url_for('static', filename='css/cover.css')}}" rel="stylesheet">
+  </head>
 
-{% endblock %}
+  <body>
+    <div class="site-wrapper">
+      <div class="site-wrapper-inner">
+        <div class="cover-container">
+          <div class="masthead clearfix">
+            <div class="inner">
+              <h3 class="masthead-brand">Alexandria</h3>
+              <nav>
+                <ul class="nav masthead-nav">
+                  <li class="active"><a href="{{url_for('home')}}">Home</a></li>
+                  <li><a href="{{url_for('browser.browse')}}">Browse</a></li>
+                  <li><a href="{{url_for('admin.config_index')}}">Admin</a></li>
+                </ul>
+              </nav>
+            </div>
+          </div>
+
+          <div class="inner cover">
+            <h1 class="cover-heading">Welcome to Alexandria</h1>
+            <p class="lead">The content here is for sharing and enjoying.</p>
+            <p class="lead">
+              <a href="{{url_for('browser.browse')}}" class="btn btn-lg btn-default">Go Exploring</a>
+            </p>
+          </div>
+
+          <div class="mastfoot">
+            <div class="inner">
+              <p>This is running Alexandria v {{config["version"] or "[git]"}}.</p>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="{{url_for('static', filename='js/jquery.min.js')}}"></script>
+    <script src="{{url_for('static', filename='js/bootstrap.min.js')}}"></script>
+  </body>
+</html>
