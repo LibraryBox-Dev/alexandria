@@ -1,0 +1,11 @@
+{% extends "config/cfg_service.html" %}
+
+{% block service_config_options  %}
+
+{{field("interface", "DNSMasq interface", "text")}}
+{{field("start_address", "Starting IP", "text")}}
+{{field("end_address", "Ending IP", "text")}}
+{{field("subnet_mask", "Subnet mask", "text")}}
+{{field("lease_time", "Lease time (in minutes)", "text")}}
+
+{% endblock %}

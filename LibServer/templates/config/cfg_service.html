@@ -1,7 +1,8 @@
 {% extends "config/base.html" %}
 {% block config_page_content %}
+<h1>{{current_section}}</h1>
 {{field('enabled', "Enabled", 'checkbox')}}
-
+</hr />
 {% block service_config_options %}{%endblock%}
 
 {{savebutton()}}

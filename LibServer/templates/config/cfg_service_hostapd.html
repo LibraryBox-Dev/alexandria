@@ -1,0 +1,12 @@
+{% extends "config/cfg_service.html" %}
+
+{% block service_config_options  %}
+
+{{field("interface", "interface", "text")}}
+{{field("country", "Country", "text")}}
+{{field("channel", "802.11 channel", "text")}}
+{{field("ssid", "SSID", "text")}}
+{{field("wpa", "Enable WPA security", "checkbox")}}
+{{field("psk", "WPA Passphrase", "text")}}
+
+{% endblock %}
