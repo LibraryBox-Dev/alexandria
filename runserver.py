@@ -32,6 +32,8 @@ if __name__ == '__main__':
 
     app.config["product"] = "PriateBox"
     app.config["version"] = "3.0-NG"
+    
+
 
     HOST = environ.get('SERVER_HOST', args.host)
     try:
@@ -49,13 +51,15 @@ if __name__ == '__main__':
 
     app.config.load(args.baseconfig, args.localconfig)
 
+    app.config["product"] = app.config.get("alexandria","product", "Alexandria")
+    app.config["version"] = app.config.get("alexandria", "version", "(HEAD?)")
 
     app.secret_key = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(32))
 
 
     app.debug = args.debug
 
-    app.register_blueprint(browser,url_prefix='/browse')
+    app.register_blueprint(browser)
     if(not args.noadmin):
        app.register_blueprint(admin,url_prefix='/admin')
 
