@@ -10,6 +10,11 @@
 </ul>
 
 <div class="container-fluid">
+
+{% if folder_description %}
+<pre><code>{{folder_description}}</code></pre>
+{%endif%}
+
 {% if show_updir %}
 <div class="row"><div class="col-xs-12"><a href="../"><i class="fa fa-fw fa-arrow-up"></i> Parent directory</a></div></div>
 {%endif%}
@@ -25,7 +30,7 @@
 {% for file in listing_files %}
 <div class="row">
     <div class="col-sm-8 col-xs-7">
-        <a href="{{url_for('browser.fetch_file', name=where+'/'+file.name)}}">
+        <a href="{{url_for('browser.fetch_file', name=file.fullpath)}}">
         <i class="fa fa-fw fa-file"></i>
         {{file.name}}
         </a>

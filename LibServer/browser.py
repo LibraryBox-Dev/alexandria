@@ -24,8 +24,8 @@ def sizeof_fmt(num, suffix='B'):
         num /= 1024.0
     return "%.1f%s%s" % (num, 'Yi', suffix)
 
-@browser.route("/")
-@browser.route("/<path:where>")
+@browser.route("/browse/")
+@browser.route("/browse/<path:where>")
 def browse(where=""):
     """
     This takes a path and turns it into a list of folders, etc.
@@ -49,6 +49,18 @@ def browse(where=""):
 
     # Now, we can read through the directory.
     dir_contents = list( filter(lambda fn: not fn.startswith("."), os.listdir(fullpath)))
+
+    folder_description = None
+    # check if there's a _folder.jpg and/or _index.txt file:
+    if "_index.txt" in dir_contents:
+        # _index.txt is there. We're going to get its contents and do the thing
+        with open(os.path.join(fullpath,"_index.txt")) as f:
+            folder_description = f.read()
+    
+    # not sure if I should do this, but it's a handy feature
+    # maybe add a tunable?
+    #if "index.html" in dir_contents:
+    #    return redirect("getfile", file=safe_join(where,"index.html"))
 
     # Separate the files from the directories.
     # We do this so that we can show the directories first, then the files.
@@ -76,6 +88,10 @@ def browse(where=""):
     # on it later if we need more information out of stat()
     def file_record_maker(filename):
         record = { "name": filename }
+        if where == '':
+            record["fullpath"] = filename
+        else:
+            record["fullpath"] = safe_join(where, filename)
         statx = os.stat(os.path.join(fullpath,filename))
         record["size"] = sizeof_fmt(statx.st_size)
         record["size_b"] = statx.st_size
@@ -95,11 +111,12 @@ def browse(where=""):
         listing_dirs=sorted(dirs),
         where=where.rstrip('/').lstrip('/'),
         show_updir=show_up,
-        crumbs=crumbs
+        crumbs=crumbs,
+        folder_description=folder_description
         )
 
 
-@browser.route("/getfile/<path:name>")
+@browser.route("/content/<path:name>")
 def fetch_file(name,attach=False):
     # get the safe path to where
     # stream the file to the browser
