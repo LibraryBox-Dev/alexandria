@@ -3,12 +3,15 @@ The flask application package.
 """
 
 from configparser import ConfigParser
-from flask import Flask,render_template,Config
-
+from flask import Flask,render_template,Config,session,request,abort
+import base64
 from functools import wraps
 from flask import g,request,redirect,url_for
+import itsdangerous
+
 
 class LibConfig(Config):
+    tainted=False
     def __init__(self, *args, **kwargs):
         """
         LibConfig is essentially just a wrapper around
@@ -18,6 +21,7 @@ class LibConfig(Config):
         self.localconf = ""
         self.baseconf = "" 
         self.parser = None
+        self.tainted = False
         Config.__init__(self, *args, **kwargs)
     def get(self, section, option, default=None):
         """
@@ -32,6 +36,14 @@ class LibConfig(Config):
         if not self.parser.has_option(section,option):
             return default
         return self.parser.get(section, option)
+
+    def getBool(self,section,option,default=True):
+        if not self.parser.has_section(section):
+            return default
+        elif not self.parser.has_option(section,option):
+            return default
+        else:
+            return self.parser.getboolean(section,option)
 
     def load(self, baseconfig, localconfig):
         """
@@ -55,28 +67,65 @@ app = LibFlask(__name__)
 
 
 def needs_authentication():
-    def wrapper(f):
+    def auth_chk_wrapper(f):
         @wraps(f)
         def deco(*args, **kwargs):
-            if g.auth is None or g.auth == False:
-                return redirect(url_for('authenticate'))
+            if "auth" in session:
+                print(">> AUTH: {0}".format(session["auth"]))
+            if ( not 'authenticated' in session )  or session["authenticated"] == False:
+                # calculate next
+                # now, we're going to sign it.
+                notary = itsdangerous.URLSafeSerializer(app.secret_key)
+                signed_next = notary.dumps(request.full_path)
+                return redirect(url_for('authenticate',next=signed_next))
             else:
                 return f(*args, **kwargs)
         return deco
-    return wrapper
+    return auth_chk_wrapper
 
 
 @app.route("/auth/",methods=["GET","POST"])
 def authenticate():
-    # are we already authenticated?
-    if g.auth != None and g.auth != False:
-        return redirect(url_for("home"))
+    next = None
+    if 'next' in request.args:
+        next = request.args["next"]
+    if request.method == "POST":
+        # Check if we're correct.
+        passphrase = app.config.get("general","admin_key")
+        # Check the request
+        chkpass = request.form["password"]
+        print("Comparing {0} == {1} ? ".format(passphrase,chkpass))
+        if(passphrase == chkpass):
+            print("Successful login!")
+            session["authenticated"]=True
+            # redirect off
+            if request.form["next"] == "":
+                print("No redirect specified. We're going home.")
+                return redirect(url_for("home"))
+            else:
+                # Check to see if it's safe
+                notary = itsdangerous.URLSafeSerializer(app.secret_key)
+                try:
+                    print("We got a next, checking that it's safe")
+                    safe_next = notary.loads(request.form["next"])
+                    print("Was safe, next={0}".format(safe_next))
+                    return redirect(safe_next)
+                except itsdangerous.BadSignature as e:
+                    print(e)
+                    abort(500)
+        else:
+            session["authenticated"]=False
+            return render_template("login.html",fail=True,next=next);
     else:
-        return "This is the login page."
+        # are we already authenticated?
+        if "authenticated" in session and session["authenticated"] == True:
+            return redirect(url_for("home"))
+        else:
+            return render_template("login.html",next=next)
 
 @app.route("/auth/logout")
 def logout():
-    g.auth = False
+    session["authenticated"] = False
     return redirect(url_for('home'))
 
 

@@ -30,7 +30,7 @@ def browse(where=""):
     """
     This takes a path and turns it into a list of folders, etc.
     """
-    basepath=app.config.get("storage", "path")
+    basepath=app.config.get("storage", "location")
     
 
     #TODO: Make this something meaningful. There needs to be a good explanation as to what has happened
@@ -120,5 +120,5 @@ def browse(where=""):
 def fetch_file(name,attach=False):
     # get the safe path to where
     # stream the file to the browser
-    basepath = app.config.get("storage", "path")
+    basepath = app.config.get("storage", "location")
     return send_from_directory(basepath, name)

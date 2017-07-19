@@ -7,6 +7,9 @@
     {% for (crumb,where) in crumbs %}
         <li><a href="{{url_for('browser.browse', where=where)}}">{{crumb}}</a></li>
     {%endfor%}
+    <div class="pull-right">
+    <a href="#" class=""><i class="fa fa-upload"></i> Upload</a>
+</div>
 </ul>
 
 <div class="container-fluid">

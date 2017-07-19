@@ -40,9 +40,12 @@
 
   <div class="row">
     <div class="col-md-9 col-md-push-3">
-    
-      <ol class="breadcrumb">
-      </ol>
+   
+      {% if config.tainted %}
+        <div class="alert alert-default">
+          Configuration changes have been made, but a restart is neccesary for them to come into effect.
+          <a href="#" class="btn btn-default btn-small float-right">Restart Now</a>
+      </div>{% endif %}
     
       <form class="form-horizontal" role="form" method="POST" action="{{url_for('.write_config', section=current_section)}}">
       {% block config_page_content %}

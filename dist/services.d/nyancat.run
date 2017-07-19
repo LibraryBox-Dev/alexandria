@@ -1,0 +1,2 @@
+START="tinetd 3333 nyancat -t"
+STOP=""

@@ -7,7 +7,7 @@ several other administration tasks such as restarting the device or restarting s
 
 from datetime import datetime
 from flask import Blueprint,render_template, abort, redirect, url_for, request,session
-from LibServer import app
+from LibServer import app, needs_authentication
 
 from configparser import ConfigParser
 
@@ -114,6 +114,7 @@ def get_sidebar():
     return sidebar
 
 @admin.route("/")
+@needs_authentication()
 def config_index():
     """
     this route only lists the available sections.
@@ -181,6 +182,7 @@ def get_group_sections(config_reader, group):
 # /config/<section>
 
 @admin.route('/<section>')
+@needs_authentication()
 def config_section(section):
     """
     This configures a specific section of the configuration file
@@ -305,6 +307,7 @@ def config_section(section):
 
 
 @admin.route('/write/<section>', methods=['POST'])
+@needs_authentication()
 def write_config(section):
     """
     this method takes a section and writes it to the configuratiom file as requested.
@@ -364,7 +367,8 @@ def write_config(section):
         localconf.write(conf_fd)
 
     # The file is now written.
-
+    # We mark the configuration as being tainted.
+    app.config.tainted = True
     # Now we should have everything working.
 
     return(redirect(url_for('.config_section', section=section)))

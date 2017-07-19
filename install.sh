@@ -68,11 +68,11 @@ if [ $DEVENV -eq 1 ]; then
 	ABINDIR=$(pwd)
 else
 	ABINDIR=${INSTDIR}/bin
-	AVARDIR=${INSTDIR}/var
-	ARUNDIR=${INSTDIR}/run
 fi
 
 
+AVARDIR=${INSTDIR}/var
+ARUNDIR=${INSTDIR}/run
 VENVDIR=${INSTDIR}/env
 VENVBIN=${VENVDIR}/bin
 VENVPIP=${VENVBIN}/pip
@@ -96,7 +96,7 @@ if [ $DEVENV -eq 1 ]; then
         echo "Make sure that the following packages are installed: python2.7, python3, pip, virtualenv, git"
 else
 echo "Installing python 3, pip, dnsmasq, nginx"
-apt-get install -y git python3 python3-virtualenv python2.7 python-pip
+apt-get install -y git python3 python3-virtualenv python2.7 python-pip nginx-light
 fi
 
 
@@ -216,9 +216,14 @@ Description=Alexandria librarian daemons
 after=network.target
 
 [Service]
-Type=oneshot
-ExecStart=${ABINDIR}/libctl.sh start
-ExecStop=${ABINDIR}/libctl.sh stop
+Type=simple
+ExecStart=supervisord -c supervisord.conf
+
+[Exec]
+WorkingDirectory=${AINSTDIR}
+Environment="PATH=${ABINDIR}:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+EnvironmentFile=/etc/alexandria-env
+
 EOF
 
 # Now we link them in the right way
@@ -242,6 +247,7 @@ else
     echo "Turning off distribution hostapd and dnsmasq"
     systemctl disable hostapd
     systemctl disable dnsmasq
+    systemctl disable nginx
 
 fi
 

@@ -43,6 +43,6 @@ for service in $SERVICES; do
 	fi
 done
 
+./mount-media.sh
 
-
-# End genconfig5
+# End genconfig
