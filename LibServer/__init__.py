@@ -67,22 +67,38 @@ app = LibFlask(__name__)
 
 
 def needs_authentication():
+    """
+    Decorator: Attach this to a route and it will require that the session has been
+    previously authenticated.
+    """
     def auth_chk_wrapper(f):
+        # This is our decoratorated function wrapper
         @wraps(f)
         def deco(*args, **kwargs):
-            if "auth" in session:
-                print(">> AUTH: {0}".format(session["auth"]))
-            if ( not 'authenticated' in session )  or session["authenticated"] == False:
-                # calculate next
-                # now, we're going to sign it.
-                notary = itsdangerous.URLSafeSerializer(app.secret_key)
-                signed_next = notary.dumps(request.full_path)
-                return redirect(url_for('authenticate',next=signed_next))
+            # If the session does not yet have an authentication 
+            if not is_authenticated():
+                return redirect(sign_auth_path(request.full_path))
             else:
                 return f(*args, **kwargs)
         return deco
     return auth_chk_wrapper
 
+def is_authenticated():
+    return ('authenticated' in session) and session["authenticated"] == True
+
+def sign_auth_path(next_path):
+    # next_path must start with a /
+    if not next_path.startswith('/'):
+        abort(503)
+    # sign the next_path
+    notary = itsdangerous.URLSafeSerializer(app.secret_key)
+    next_path_signed = notary.dumps(next_path)
+    return url_for('authenticate', next=next_path_signed)
+
+def unsign_auth_path(path_signed):
+    notary = itsdangerous.URLSafeSerializer(app.secret_key)
+    next_path_unsigned = notary.loads(path_signed)
+    return next_path_unsigned
 
 @app.route("/auth/",methods=["GET","POST"])
 def authenticate():
@@ -103,22 +119,23 @@ def authenticate():
                 print("No redirect specified. We're going home.")
                 return redirect(url_for("home"))
             else:
-                # Check to see if it's safe
-                notary = itsdangerous.URLSafeSerializer(app.secret_key)
+                if (not 'next' in request.form) or request.form["next"] == '':
+                    return redirect(url_for('home'))
                 try:
-                    print("We got a next, checking that it's safe")
-                    safe_next = notary.loads(request.form["next"])
-                    print("Was safe, next={0}".format(safe_next))
-                    return redirect(safe_next)
-                except itsdangerous.BadSignature as e:
-                    print(e)
+                    redirect(unsign_auth_path(request.form["next"]))
+                except:
                     abort(500)
         else:
             session["authenticated"]=False
             return render_template("login.html",fail=True,next=next);
     else:
         # are we already authenticated?
-        if "authenticated" in session and session["authenticated"] == True:
+        if is_authenticated():
+            if 'next' in request.args:
+                try:
+                    return redirect(unsign_auth_path(request.args["next"]))
+                except:
+                    return redirect(url_for('home'))
             return redirect(url_for("home"))
         else:
             return render_template("login.html",next=next)
