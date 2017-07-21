@@ -120,7 +120,8 @@ def config_index():
     this route only lists the available sections.
     """
     return render_template("config/index.html",
-                           groups=configuration_groups
+                           groups=configuration_groups,
+                           title="Admin: index"
                            )
 
 def get_config_reader():
@@ -298,7 +299,8 @@ def config_section(section):
             sidebar=sidebar,
             current_group=current_group,
             current_section=section,
-            values=config_options_cooked
+            values=config_options_cooked,
+            title="Admin: {0} ({1})".format(cgroupdict['short'],section)
             )
     except Exception as e:
         if app.debug:
