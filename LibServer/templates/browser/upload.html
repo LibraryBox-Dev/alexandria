@@ -1,0 +1,18 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<h1>Upload file</h1>
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-info"><em>Info: </em>{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+<form class="form" enctype="multipart/form-data" method="POST">
+    <input type="file" name="file" placeholder="File to upload">
+    <button type="submit" class="btn btn-default">Upload</button>
+</form>
+
+{% endblock %}

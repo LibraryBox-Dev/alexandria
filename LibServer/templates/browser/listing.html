@@ -8,7 +8,7 @@
         <li><a href="{{url_for('browser.browse', where=where)}}">{{crumb}}</a></li>
     {%endfor%}
     <div class="pull-right">
-    <a href="#" class=""><i class="fa fa-upload"></i> Upload</a>
+    <a href="{{url_for('browser.upload',path=where)}}"><i class="fa fa-upload"></i> Upload</a>
 </div>
 </ul>
 

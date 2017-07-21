@@ -1,5 +1,9 @@
 from flask import Blueprint,render_template, abort, redirect, safe_join, send_from_directory
+from flask import request, session, url_for,flash
+from werkzeug.utils import secure_filename
 from LibServer import app
+from LibServer import is_authenticated,sign_auth_path
+
  
 import os.path
 import os
@@ -112,7 +116,8 @@ def browse(where=""):
         where=where.rstrip('/').lstrip('/'),
         show_updir=show_up,
         crumbs=crumbs,
-        folder_description=folder_description
+        folder_description=folder_description,
+        title="Browsing {0}".format(splits[-1])
         )
 
 
@@ -122,3 +127,52 @@ def fetch_file(name,attach=False):
     # stream the file to the browser
     basepath = app.config.get("storage", "location")
     return send_from_directory(basepath, name)
+
+def pub_uploads():
+    return app.config.get('general','allow_upload',False)
+def can_upload():
+    return is_authenticated() or pub_uploads()
+
+def allowed_filename(name):
+    if is_authenticated():
+        return True
+    if not name.contains('.'):
+        return False
+    if app.config.get('general','restrict_uploads',True) == False:
+        return True
+    file_ext = name.split('.')[-1]
+    allowed_exts = app.config.get('general','allowed_filetypes','')
+    return file_ext in allowed_exts
+
+@browser.route("/upload/<path:path>",methods=['POST','GET'])
+@browser.route('/upload/',methods=['POST','GET'])
+def upload(path=""):
+    """
+
+    Uploads a file to a place.
+    """
+    # Check that uploads are OK
+    if not can_upload():
+        return redirect(sign_auth_path(request.full_path))
+    if request.method=='POST':
+        # handle uploaded files
+        if not 'file' in request.files:
+            abort(400) # General UA error
+        file = request.files["file"]
+        # We default to using the name of the file provided,
+        # but allow the filename to be changed via POST details.
+        fname = file.filename
+        if 'name' in request.form:
+            fname = request.form['name']
+        safe_fname = secure_filename(fname)
+        if not allowed_filename(safe_fname):
+            abort(400) # General client error
+        # We're handling a potentially dangerous path, better run it through
+        # The flask path jointer.
+        basepath=app.config.get("storage", "location")
+        fullpath = safe_join(basepath, path)
+        file.save(os.path.join(fullpath,fname))
+        flash("File uploaded successfully")
+        return redirect(url_for('browser.upload',path=path))
+    else:
+        return render_template("browser/upload.html",path=path,title="Upload Files")
