@@ -76,38 +76,33 @@
         <p>You will be prompted to reboot your device. If you choose not to, all administration pages will inform you that the settings you have changed will not go into effect until you have rebooted your device.</p>
     </div>
 
-      <div class="row marketing">
-        <div class="col-lg-6">
-          <h4>Subheading</h4>
-          <p>Donec id elit non mi porta gravida at eget metus. Maecenas faucibus mollis interdum.</p>
-
-          <h4>Subheading</h4>
-          <p>Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Cras mattis consectetur purus sit amet fermentum.</p>
-
-          <h4>Subheading</h4>
-          <p>Maecenas sed diam eget risus varius blandit sit amet non magna.</p>
-        </div>
-
-        <div class="col-lg-6">
-          <h4>Subheading</h4>
-          <p>Donec id elit non mi porta gravida at eget metus. Maecenas faucibus mollis interdum.</p>
-
-          <h4>Subheading</h4>
-          <p>Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Cras mattis consectetur purus sit amet fermentum.</p>
-
-          <h4>Subheading</h4>
-          <p>Maecenas sed diam eget risus varius blandit sit amet non magna.</p>
-        </div>
-      </div>
+    <div class="row marketing">
+        <h1>Wireless Network options</h1>
+        <h2>To use a self-contained network</h2>
+        <p>This is the default configuration. To change settings related to the network itself (name, security, etc), you'll need to look at <code>hostapd</code> under <code>Service Configuration</code> in administration section. The settings most interesting to people are:
+            <dl>
+                <dt>802.11 channel</dt>
+                <dd>The channel (1-11) that the network will be on; Commonly, home access points use 3, 6 and 11.</dd>
+                <dt>WPA2 security</dt>
+                <dd>Turning on this enables encryption on your network using WPA2 security. This is supported by most devices and should be fine for most use. Note that turning this on will require users to know the <em>WPA2 Passphrase</em>.</dd>
+                <dt>WPA2 Passphrase</dt>
+                <dd>The password used for encryption. If WPA2 security is turned on, all users who wish to connect must know this. It must be between 8 and 63 characters and may contain spaces and special characters (<code>!@#$%</code>, etc.) Using characters from languages other than english is possible, but may not work properly.</dd>
+           </dl>
+           </p>
+        <h2>Connecting your device to an established network</h2>
+        <p>This scenario involves turning off several services. Notably, you must
+        <ol>
+            <li>Turn off the <code>DNSMasq</code> service</li>
+            <li>Turn off the <code>HostAPd</code> service</li>
+            <li>Set the wireless network interface to "client" mode</li>
+            <li>Enable DHCP or configure IP information.</li>
+        </li>
+  </div>
 
       <footer class="footer">
-        <p>&copy; 2016 Company, Inc.</p>
+        <p>Alexandria is <a href="//github.com/indrora/Alexandria">open source</a> on <a href="//github.com">GitHub</a></p>
       </footer>
 
     </div> <!-- /container -->
-
-
-    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-    <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>
   </body>
 </html>
