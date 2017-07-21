@@ -125,7 +125,7 @@ def authenticate():
                 if (not 'next' in request.form) or request.form["next"] == '':
                     return redirect(url_for('home'))
                 try:
-                    redirect(unsign_auth_path(request.form["next"]))
+                    return redirect(unsign_auth_path(request.form["next"]))
                 except:
                     abort(500)
         else:
