@@ -4,6 +4,25 @@
 {{field('enable', "Enable interface", 'checkbox')}}
 {{field('dhcp', "Use DHCP", 'checkbox')}}
 
+  <div class="form-group">
+    <label for="iface_mode" class="col-sm-2 control-label">Mode</label>
+    <div class="col-sm-10">
+        <div class="radio">
+            <label>
+                <input type="radio" name="mode" id="mode_ap" value="ap" {% if 'mode' in values and values['mode']=='ap'%}checked{%endif%}  />
+                <em>Access Point</em> mode: This interface will be used to host a wireless network.</em>
+            </label>
+        </div>
+        <div class="radio">
+            <label>
+                <input type="radio" name="mode" id="mode_client" value="client" {% if 'mode' in values and values['mode']=='client' %}checked{%endif%}  />
+                <em>Client</em> mode: This interface will be used to connect to an existing network.</em>
+            </label>
+        </div>
+    </div>
+  </div>
+
+
 <h2>Client mode</h2>
 <div class="form-group"><em>You may leave this blank if you don't intend to connect to the internet through your device.</em></div>
 
