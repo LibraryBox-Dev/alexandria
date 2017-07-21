@@ -84,9 +84,11 @@ def needs_authentication():
     return auth_chk_wrapper
 
 def is_authenticated():
+    """Gets the authentication status of the current session"""
     return ('authenticated' in session) and session["authenticated"] == True
 
 def sign_auth_path(next_path):
+    """returns a URL-safe signed next_path"""
     # next_path must start with a /
     if not next_path.startswith('/'):
         abort(503)
@@ -96,6 +98,7 @@ def sign_auth_path(next_path):
     return url_for('authenticate', next=next_path_signed)
 
 def unsign_auth_path(path_signed):
+    """returns the path from a signed/sealed next_path"""
     notary = itsdangerous.URLSafeSerializer(app.secret_key)
     next_path_unsigned = notary.loads(path_signed)
     return next_path_unsigned
