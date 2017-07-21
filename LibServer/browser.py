@@ -120,6 +120,14 @@ def browse(where=""):
         title="Browsing {0}".format(splits[-1])
         )
 
+@browser.route("/manage/<action>/<path:name>")
+@needs_authentication()
+def manage(action, path):
+    """
+    This handles the management actions.
+     
+    """
+    pass
 
 @browser.route("/content/<path:name>")
 def fetch_file(name,attach=False):
