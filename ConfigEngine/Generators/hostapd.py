@@ -26,6 +26,8 @@ def hostapd(io):
         "channel={0}".format(network['channel']),
         "ssid={0}".format(network["ssid"]),
         ])
+    if (toBool(network['no_broadcast'])):
+        writeLines(["ignore_broadcast_ssid=2"],io)
     if( toBool( network["wpa"]) ):
         # Enable WPA encryption
         writeLines(io, [
