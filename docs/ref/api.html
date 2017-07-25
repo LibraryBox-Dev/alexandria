@@ -1,0 +1,339 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>API reference &#8212; Alexandria 0.1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="top" title="Alexandria 0.1.0 documentation" href="../index.html" />
+    <link rel="up" title="References" href="references.html" />
+    <link rel="next" title="Settings" href="settings.html" />
+    <link rel="prev" title="References" href="references.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="api-reference">
+<h1>API reference<a class="headerlink" href="#api-reference" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-LibServer">
+<span id="libserver-the-library-server-app"></span><h2>LibServer, the library server app<a class="headerlink" href="#module-LibServer" title="Permalink to this headline">¶</a></h2>
+<p>The flask application package.</p>
+<dl class="class">
+<dt id="LibServer.LibConfig">
+<em class="property">class </em><code class="descclassname">LibServer.</code><code class="descname">LibConfig</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#LibServer.LibConfig" title="Permalink to this definition">¶</a></dt>
+<dd><p>LibServer inherits this Config class so that there is an interface to the underlying ConfigParser held by the config global handed arund from Flask.</p>
+<p>The purpopse here is to keep the configuration file a handle away. The admin panel completely ignores this and handles the configuration files directly.</p>
+<dl class="method">
+<dt id="LibServer.LibConfig.get">
+<code class="descname">get</code><span class="sig-paren">(</span><em>section</em>, <em>option</em>, <em>default=None</em><span class="sig-paren">)</span><a class="headerlink" href="#LibServer.LibConfig.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a configuration item from the loaded configuration
+files.</p>
+<p>If the section or configuration is not declared, the
+default value is returned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="LibServer.LibConfig.getBool">
+<code class="descname">getBool</code><span class="sig-paren">(</span><em>section</em>, <em>option</em>, <em>default=True</em><span class="sig-paren">)</span><a class="headerlink" href="#LibServer.LibConfig.getBool" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets a boolean value, with the default default being <cite>True</cite></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="LibServer.LibConfig.load">
+<code class="descname">load</code><span class="sig-paren">(</span><em>baseconfig</em>, <em>localconfig</em><span class="sig-paren">)</span><a class="headerlink" href="#LibServer.LibConfig.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load a set of configuration files.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="LibServer.LibFlask">
+<em class="property">class </em><code class="descclassname">LibServer.</code><code class="descname">LibFlask</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#LibServer.LibFlask" title="Permalink to this definition">¶</a></dt>
+<dd><p>LibFlask is just a wrapper around the standard Flask class. It&#8217;s used to hold the config_class type.</p>
+<dl class="attribute">
+<dt id="LibServer.LibFlask.config_class">
+<code class="descname">config_class</code><a class="headerlink" href="#LibServer.LibFlask.config_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="#LibServer.LibConfig" title="LibServer.LibConfig"><code class="xref py py-class docutils literal"><span class="pre">LibConfig</span></code></a></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt>
+<em class="property">class </em><code class="descclassname">LibServer.</code><code class="descname">LibConfig</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span></dt>
+<dd><p>LibServer inherits this Config class so that there is an interface to the underlying ConfigParser held by the config global handed arund from Flask.</p>
+<p>The purpopse here is to keep the configuration file a handle away. The admin panel completely ignores this and handles the configuration files directly.</p>
+<dl class="method">
+<dt>
+<code class="descname">get</code><span class="sig-paren">(</span><em>section</em>, <em>option</em>, <em>default=None</em><span class="sig-paren">)</span></dt>
+<dd><p>Get a configuration item from the loaded configuration
+files.</p>
+<p>If the section or configuration is not declared, the
+default value is returned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">getBool</code><span class="sig-paren">(</span><em>section</em>, <em>option</em>, <em>default=True</em><span class="sig-paren">)</span></dt>
+<dd><p>Gets a boolean value, with the default default being <cite>True</cite></p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">load</code><span class="sig-paren">(</span><em>baseconfig</em>, <em>localconfig</em><span class="sig-paren">)</span></dt>
+<dd><p>Load a set of configuration files.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt>
+<em class="property">class </em><code class="descclassname">LibServer.</code><code class="descname">LibFlask</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span></dt>
+<dd><p>LibFlask is just a wrapper around the standard Flask class. It&#8217;s used to hold the config_class type.</p>
+<dl class="attribute">
+<dt>
+<code class="descname">config_class</code></dt>
+<dd><p>alias of <a class="reference internal" href="#LibServer.LibConfig" title="LibServer.LibConfig"><code class="xref py py-class docutils literal"><span class="pre">LibConfig</span></code></a></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="LibServer.is_authenticated">
+<code class="descclassname">LibServer.</code><code class="descname">is_authenticated</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#LibServer.is_authenticated" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the authentication status of the current session</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="LibServer.needs_authentication">
+<code class="descclassname">LibServer.</code><code class="descname">needs_authentication</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#LibServer.needs_authentication" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decorator: Attach this to a route and it will require that the session has been
+previously authenticated.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="LibServer.sign_auth_path">
+<code class="descclassname">LibServer.</code><code class="descname">sign_auth_path</code><span class="sig-paren">(</span><em>next_path</em><span class="sig-paren">)</span><a class="headerlink" href="#LibServer.sign_auth_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns a URL-safe signed next_path</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="LibServer.unsign_auth_path">
+<code class="descclassname">LibServer.</code><code class="descname">unsign_auth_path</code><span class="sig-paren">(</span><em>path_signed</em><span class="sig-paren">)</span><a class="headerlink" href="#LibServer.unsign_auth_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns the path from a signed/sealed next_path</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-ConfigEngine">
+<span id="configgen-the-configuration-generator-engine"></span><h2>ConfigGen: the configuration generator engine<a class="headerlink" href="#module-ConfigEngine" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="ConfigEngine.ConfigEngine">
+<em class="property">class </em><code class="descclassname">ConfigEngine.</code><code class="descname">ConfigEngine</code><span class="sig-paren">(</span><em>searchpath=[]</em><span class="sig-paren">)</span><a class="headerlink" href="#ConfigEngine.ConfigEngine" title="Permalink to this definition">¶</a></dt>
+<dd><p>The ConfigEngine is responsible for handling the generation of configuration files from a set of INI files.</p>
+<p>The goal of this is to take a set of layers (like ogres) of INI files, merge them together and turn that into a cohesive set of options.</p>
+<p>Each generator passes in either a section (name) or lambda that matches sections (a la filter). There may be multiple generators per section and
+multiple sections per generator. Genrators may be explicitly called as well.</p>
+<p>To use the ConfigEngine, create an instance of it and use the <cite>instance.generator(...)</cite> decorator.</p>
+<p>Generators should produce a number outputs (streamIO) and consume a dictionary, as well as a string that idenfies the specific section it is being run against.</p>
+<p>Generators that create multiple outputs should have one generator call per output type. Each will get run.
+Generators may be decorated with a &#64;filename decorator that specifies the filename that should be produced, or otherwise it will be the name of the section that
+was presented.</p>
+<dl class="method">
+<dt id="ConfigEngine.ConfigEngine.assertConfig">
+<code class="descname">assertConfig</code><span class="sig-paren">(</span><em>section</em>, <em>keys</em><span class="sig-paren">)</span><a class="headerlink" href="#ConfigEngine.ConfigEngine.assertConfig" title="Permalink to this definition">¶</a></dt>
+<dd><p>The goal of this decorator is to enable adding an assertion check to declare that the sections that are dpecified here are abailable in the configuration file.</p>
+<p>Using None for the section indicates that the sextion that is passed in as an argument must have the specific values as a part of that entry.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ConfigEngine.ConfigEngine.generator">
+<code class="descname">generator</code><span class="sig-paren">(</span><em>description</em>, <em>needs_argument=False</em><span class="sig-paren">)</span><a class="headerlink" href="#ConfigEngine.ConfigEngine.generator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generators make up the raison d&#8217;etre of ConfigEngine. These functions generate the actual content that is to be added to the configuration.
+Each generatotr is passed in a file-like object that makes it possible to write to these file-like objects.</p>
+<p>A generator is expected to generate one file. Normally, its contents are written to stdout or to the file that is specified on the command line
+for the configuration generator tool.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ConfigEngine.ConfigEngine.getOption">
+<code class="descname">getOption</code><span class="sig-paren">(</span><em>section</em>, <em>option</em>, <em>transform=&lt;function ConfigEngine.&lt;lambda&gt;&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#ConfigEngine.ConfigEngine.getOption" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a particular option from the configuration.</p>
+<p>Optionally, a transform is placed against it. For example, a transform that uppercases the stored value
+looks like this:</p>
+<p><cite>.getOption(&#8220;general&#8221;,&#8221;filepath&#8221;,transform=lambda v:v.upper())</cite></p>
+<p>This will return an uppercase value.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ConfigEngine.ConfigEngine.getSection">
+<code class="descname">getSection</code><span class="sig-paren">(</span><em>section</em>, <em>predicate=&lt;function ConfigEngine.&lt;lambda&gt;&gt;</em>, <em>transformKey=&lt;function ConfigEngine.&lt;lambda&gt;&gt;</em>, <em>transform=&lt;function ConfigEngine.&lt;lambda&gt;&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#ConfigEngine.ConfigEngine.getSection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the values within a section, optionally mangling the values on the way.</p>
+<p>This function can take three optional parameters:</p>
+<ul class="simple">
+<li>predicate: Only these keys from the section will be selected.</li>
+<li>transform: This function will be run over the value of each key.</li>
+<li>transformKey: this will be run over each of the</li>
+</ul>
+<p>predicate does not transform the values before comparing the key and the predicate. All
+transformation is after the list of keys within the section have been filtered by predicate.</p>
+<p>This is intentional; should you need to modify keys BEFORE they are compared, you need to do that in your predicate.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ConfigEngine.ConfigEngine.getSections">
+<code class="descname">getSections</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ConfigEngine.ConfigEngine.getSections" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns a list of sections.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ConfigEngine.ConfigEngine.hasOption">
+<code class="descname">hasOption</code><span class="sig-paren">(</span><em>section</em>, <em>option</em><span class="sig-paren">)</span><a class="headerlink" href="#ConfigEngine.ConfigEngine.hasOption" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns if a specific section&#8217;s option is set.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ConfigEngine.ConfigEngine.hasSection">
+<code class="descname">hasSection</code><span class="sig-paren">(</span><em>section</em><span class="sig-paren">)</span><a class="headerlink" href="#ConfigEngine.ConfigEngine.hasSection" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns if a specific section is currently in the configuration</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ConfigEngine.ConfigEngine.namespace">
+<code class="descname">namespace</code><span class="sig-paren">(</span><em>namespace</em><span class="sig-paren">)</span><a class="headerlink" href="#ConfigEngine.ConfigEngine.namespace" title="Permalink to this definition">¶</a></dt>
+<dd><p>declares that there is a namespace for this generator for assertions on argument section.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ConfigEngine.ConfigEngine.runGenerator">
+<code class="descname">runGenerator</code><span class="sig-paren">(</span><em>name</em>, <em>argument=None</em>, <em>outfile=&lt;_io.TextIOWrapper name='&lt;stdout&gt;' mode='w' encoding='UTF-8'&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#ConfigEngine.ConfigEngine.runGenerator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs a specific generator.</p>
+<p>Arguments:</p>
+<p>name        name of the specific parser
+argument    Argument to be passed to the generator. May not be none for generators which take an argument.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ConfigEngine.ConfigEngine.searchSections">
+<code class="descname">searchSections</code><span class="sig-paren">(</span><em>predicate</em><span class="sig-paren">)</span><a class="headerlink" href="#ConfigEngine.ConfigEngine.searchSections" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns sections that match the predicate.</p>
+<p>The predicate is put into filter() and should take one argument: The name of the section.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="docutils">
+<dt>..automodule:: ConfigGen.Generators</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">members:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/logo-small.png" alt="Logo"/>
+            </a></p>
+<h1 class="logo"><a href="../index.html">Alexandria</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started with Alexandria</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="references.html">References</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">API reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="settings.html">Settings</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="references.html">References</a><ul>
+      <li>Previous: <a href="references.html" title="previous chapter">References</a></li>
+      <li>Next: <a href="settings.html" title="next chapter">Settings</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Morgan Gangwere, The LibraryBox project.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.9</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
+      
+      |
+      <a href="../_sources/ref/api.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,149 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>HostAPd &#8212; Alexandria 0.1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="top" title="Alexandria 0.1.0 documentation" href="../../../index.html" />
+    <link rel="up" title="Services" href="../services.html" />
+    <link rel="next" title="Uploads" href="../uploads.html" />
+    <link rel="prev" title="DNSMasq" href="service_dnsmasq.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="hostapd">
+<h1>HostAPd<a class="headerlink" href="#hostapd" title="Permalink to this headline">¶</a></h1>
+<p>Hostapd is a service for generating wireless networks on Linux devices. Alexandria uses it for the configuration of its wireless network.</p>
+<div class="section" id="settings">
+<h2>Settings<a class="headerlink" href="#settings" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Country: A two-letter code for the regulatory area that you plan on using the network in.</li>
+<li>802.11 Channel: The wireless channel that the network should run on. Wireless networks need to have a bit of separation, as there is overlap between channels 1,2 and 3. For more information, see the <a class="reference external" href="https://en.wikipedia.org/wiki/List_of_WLAN_channels">Wikipedia article on 802.11 channels</a> for a detailed look. The default, 6, is common and has no overlap with most areas.</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><strong>What about ```auto```?</strong>
+The reason for auto-channel fields was such that there would be &#8220;smart&#8221; wireless access points that would pick a channel that was less populated at the time. This evolved into picking the least used channel <em>at that moment</em> and changing to it, announcing to connected devices that it was changing channel. While this was fine for not so populous areas, auto-channel changing is noisy and causes a lot of problems with some devices, which cannot handle having the access point change channel more than every so often.</p>
+</div>
+<ul class="simple">
+<li>SSID: The name of the network that the device will use.</li>
+<li>WPA Security: Enabling WPA security hides the traffic on the network to anyone who does not know the passphrase. It&#8217;s good enough security for most home environments, where it is most commonly seen.</li>
+<li>WPA Passphrase: The passphrase that will be used for WPA encryption.</li>
+<li>Hide SSID: This option disables broadcasting the network as available when clients seek to connect. This will show up on devices as as &#8220;hidden network&#8221; or be ignored.</li>
+</ul>
+<div class="section" id="warning-on-security">
+<h3>Warning on security<a class="headerlink" href="#warning-on-security" title="Permalink to this headline">¶</a></h3>
+<p>The WPA encryption and hiding of an SSID do not make your network attack-proof. There is no true defense against someone finding the name of your network, as many operating systems simply try to announce that they wish to connect to all the networks that they know, one at a time. It has only been in recent years that this practice has changed and a &#8220;listen before you connect&#8221; approach has been taken.</p>
+<p>Hiding your SSID does not stop someone with software like Airsnort, Wireshark or other network sniffing tools from finding the name of your network. The tools needed for this activity are free or cheap, requiring only a laptop and some patience.</p>
+<p>Turning on WPA encryption will obscure data being sent via the wireless network only until someone knows the key. There are ways to brute-force keys, especially weak ones, that will reveal the traffic on the network. However, if this is that important to you, consider if you feel that a <a class="reference external" href="https://www.harborfreight.com/10-in-steel-pipe-wrench-61465.html">US$6 pipe wrench</a> might be enough to <a class="reference external" href="https://www.xkcd.com/538/">get that information</a> through people who know it.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../index.html">
+              <img class="logo" src="../../../_static/logo-small.png" alt="Logo"/>
+            </a></p>
+<h1 class="logo"><a href="../../../index.html">Alexandria</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started.html">Getting Started with Alexandria</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../references.html">References</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../api.html">API reference</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../../settings.html">Settings</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../references.html">References</a><ul>
+  <li><a href="../../settings.html">Settings</a><ul>
+  <li><a href="../services.html">Services</a><ul>
+      <li>Previous: <a href="service_dnsmasq.html" title="previous chapter">DNSMasq</a></li>
+      <li>Next: <a href="../uploads.html" title="next chapter">Uploads</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Morgan Gangwere, The LibraryBox project.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.9</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
+      
+      |
+      <a href="../../../_sources/ref/settings/services/service_hostapd.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
