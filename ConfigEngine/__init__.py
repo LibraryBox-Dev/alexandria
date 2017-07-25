@@ -48,6 +48,14 @@ class ConfigEngine(object):
             self.parser.read(p)
 
     def generator(self, description,needs_argument=False):
+        """
+        Generators make up the raison d'etre of ConfigEngine. These functions generate the actual content that is to be added to the configuration.
+        Each generatotr is passed in a file-like object that makes it possible to write to these file-like objects.
+
+        A generator is expected to generate one file. Normally, its contents are written to stdout or to the file that is specified on the command line
+        for the configuration generator tool.
+
+         """
         def rGenerator(func):
             name = func.__name__
             if name in self.generators:
@@ -69,6 +77,11 @@ class ConfigEngine(object):
         return rGenerator
 
     def assertConfig(self, section, keys):
+        """
+        The goal of this decorator is to enable adding an assertion check to declare that the sections that are dpecified here are abailable in the configuration file.
+
+        Using None for the section indicates that the sextion that is passed in as an argument must have the specific values as a part of that entry.
+        """
         def rDecorator(func):
             name = func.__name__
             if name not in self.generators:

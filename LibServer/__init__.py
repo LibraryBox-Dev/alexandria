@@ -11,6 +11,11 @@ import itsdangerous
 
 
 class LibConfig(Config):
+    """
+    LibServer inherits this Config class so that there is an interface to the underlying ConfigParser held by the config global handed arund from Flask.
+
+    The purpopse here is to keep the configuration file a handle away. The admin panel completely ignores this and handles the configuration files directly.
+    """
     tainted=False
     def __init__(self, *args, **kwargs):
         """
@@ -38,6 +43,9 @@ class LibConfig(Config):
         return self.parser.get(section, option)
 
     def getBool(self,section,option,default=True):
+        """
+        Gets a boolean value, with the default default being `True`
+        """
         if not self.parser.has_section(section):
             return default
         elif not self.parser.has_option(section,option):
@@ -57,6 +65,10 @@ class LibConfig(Config):
         self.baseconf = baseconfig
 
 class LibFlask(Flask):
+    """
+    LibFlask is just a wrapper around the standard Flask class. It's used to hold the config_class type. 
+    
+    """
     config_class = LibConfig
 
     def __init__(self,*args, **kwargs):
