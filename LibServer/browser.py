@@ -2,7 +2,7 @@ from flask import Blueprint,render_template, abort, redirect, safe_join, send_fr
 from flask import request, session, url_for,flash
 from werkzeug.utils import secure_filename
 from LibServer import app
-from LibServer import is_authenticated,sign_auth_path
+from LibServer import is_authenticated,sign_auth_path,needs_authentication
 
  
 import os.path
@@ -137,7 +137,7 @@ def fetch_file(name,attach=False):
     return send_from_directory(basepath, name)
 
 def pub_uploads():
-    return app.config.get('general','allow_upload',False)
+    return app.config.get('uploads','allow_upload',False)
 def can_upload():
     return is_authenticated() or pub_uploads()
 
@@ -146,10 +146,10 @@ def allowed_filename(name):
         return True
     if not name.contains('.'):
         return False
-    if app.config.get('general','restrict_uploads',True) == False:
+    if app.config.get('uploads','restrict_uploads',True) == False:
         return True
     file_ext = name.split('.')[-1]
-    allowed_exts = app.config.get('general','allowed_filetypes','')
+    allowed_exts = app.config.get('uploads','allowed_filetypes','')
     return file_ext in allowed_exts
 
 @browser.route("/upload/<path:path>",methods=['POST','GET'])

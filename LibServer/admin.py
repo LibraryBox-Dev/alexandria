@@ -43,17 +43,15 @@ configuration_groups = {
         "namespace":"interface",
         "leaf":"Network"
         },
-#    "network_interface":{
-#        "name":"Interface Configuration",
-#        "short":"Network Interfaces",
-#        "desc":"Configure how your box uses its network interfaces",
-#        "icon":"fa fa-microchip",
-#        "namespace": "interface",
-#        "type":"multi",
-#        "template":None,
-#        "leaf":"Interface"
-#        },
-    "22services":{
+   "15uploads": {
+       "name":"Uploads",
+       "short":"Uploads",
+       "desc":"Configure options relating to uploads",
+       "type":"signle",
+       "section":"uploads",
+       "icon":"fa fa-upload"
+   },
+   "22services":{
         "name":"Service Configuration",
         "short":"Services",
         "desc":"Services you can run on your box",

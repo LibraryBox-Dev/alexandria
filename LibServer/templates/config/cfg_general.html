@@ -9,14 +9,6 @@
 {{field('expert_mode','Expert Mode','checkbox')}}
 <div class="alert">Turning this on will let you break things. Options that are not typically settable will be visible if this is enabled.</div>
 
-{{field('allow_uploads',"Allow public uploads",'checkbox')}}
-<p>Enabling public uploads does not allow users to rename or move files. Only the administrator can do that.</p>
-
-{{field('restrict_uploads',"Restrict uploadable filetypes",'checkbox')}}
-<p><em>Recommended.</em> This allows only a selected set of filetypes to be uploaded, based on extension. This is not perfectly secure, however</p>
-{{field('allowed_filetypes',"Allowed filetypes for upload")}}
-<p>This must be a comma-separated list of filetypes which are allowed. For example, the list <code>html,txt,jpg,png,pdf</code> would allow a small number.</p>
-
 {{savebutton()}}
 
 {% endblock %}
