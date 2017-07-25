@@ -30,10 +30,15 @@ def debian_interface(buffer, iface):
 
     if(toBool(ifacedict["dhcp"])):
         # Sanity check: Is this the interface for dnsmasq or hostapd?
-        dnsmasq_iface = engine.getOption("network","dnsmasq_interface")
-        hostapd_iface = engine.getOption("network","hostapd_interface")
-        if(iface == dnsmasq_iface or iface == hostapd_iface):
-            raise ValueError("Can't run dnsmasq or hostapd on a dhcp interface.")
+        dnsmasq_iface = engine.getOption("service.dnsmasq","interface")
+        dnsmasq_enabled = engine.getOption("service.dnsmasq","enabled")
+        hostapd_iface = engine.getOption("service.hostapd","interface")
+        hostapd_enabled = engine.getOption("service.hostapd","enabled")
+
+        if(hostapd_enabled and iface == hostapd_iface):
+            raise ValueError("Can't have dhcp turned on on the hostapd interface")
+        if(dnsmasq_enabled and iface == dnsmasq_iface):
+            raise ValueError("Can't run dhcp on the interface dnsmasq listens on.")
 
         # This is a dhcp interface.
         writeLines(buffer, [
