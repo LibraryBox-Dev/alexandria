@@ -1,7 +1,7 @@
 from ConfigEngine.Generators import engine
 from ConfigEngine import toBool,writeLines
 
-@engine.assertConfig("service.dnsmasq",(
+@engine.assertConfig("service.hostapd",(
         "enable",
         "interface",
         "channel",
