@@ -282,3 +282,6 @@ dist/env
 # Viual Studio Code
 .vscode/
 
+docs/.buildinfo
+docs/.doctrees
+
