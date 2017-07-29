@@ -28,34 +28,18 @@ EOF
 # the /opt/alexandria directory and we have full system root
 # priveleges. 
 
-DEVENV=0
-if [ -d .git ]; then
-	DEVENV=1
-fi
-
 if [ -e $GITURL ]; then
 GITURL=http://github.com/indrora/Alexandria.git
 fi
 
-if [ $DEVENV -eq 1 ]; then
-	# We need to make sure that we make the "install" directory be the dist/ directory.
-	# Thid also means that LOCALCONF will be set to a file that is ignored in .gitignore
-	# so that we can make sure to load it later.
-
-	# words words words are cooool.
-
-	INSTDIR=$(pwd)/dist
-	LOCALCONF=$(pwd)/local.ini
-else
-    if [ -e $INSTDIR ]; then
-    INSTDIR=/opt/alexandria
-    fi
-
-    if [ -e $LOCALCONF ]; then
-    LOCALCONF=/etc/alexandria.ini
-    fi
-
+if [ -e $INSTDIR ]; then
+INSTDIR=/opt/alexandria
 fi
+
+if [ -e $LOCALCONF ]; then
+LOCALCONF=/etc/alexandria.ini
+fi
+
 
 
 # if we're doing things in a developer type environment, we're going to need
@@ -64,11 +48,7 @@ fi
 
 echo "Installing to ${INSTDIR} with configuration in ${LOCALCONF}"
 
-if [ $DEVENV -eq 1 ]; then
-	ABINDIR=$(pwd)
-else
-	ABINDIR=${INSTDIR}/bin
-fi
+ABINDIR=${INSTDIR}/bin
 
 
 AVARDIR=${INSTDIR}/var
@@ -79,32 +59,17 @@ VENVPIP=${VENVBIN}/pip
 VENVPY=${VENVBIN}/python
 
 
-if [ $DEVENV -eq 1 ]; then
-    echo "skipping root check."
-else
     if [ $(whoami) != "root" ]; then
        echo "I need to be run as root!"
        exit 1
     fi
-fi
 
 
 
 echo "Installing dependencies"
 
-if [ $DEVENV -eq 1 ]; then
-        echo "Make sure that the following packages are installed: python2.7, python3, pip, virtualenv, git"
-else
 echo "Installing python 3, pip, dnsmasq, nginx"
-apt-get install -y git python3 python3-virtualenv python2.7 python-pip nginx-light
-fi
-
-
-if [ $DEVENV -eq 1 ]; then
-    echo "Not installing hostapd and friends."
-else
-   apt-get install -y hostapd dnsmasq nginx
-fi
+apt-get install -y git virtualenv python3-virtualenv python3 python2.7 python-pip nginx-light hostapd dnsmasq
 
 
 echo "Installing supervisord"
@@ -114,13 +79,11 @@ echo "### DEPS INSTALLED. LET'S GET THIS LIBRARY BUILT!"
 
 echo "Cloning and installing Alexandria."
 
-if [ -e $DEVENV ]; then
     mkdir -p ${INSTDIR}
     mkdir -p ${AVARDIR}
     mkdir -p ${ARUNDIR}
     git clone ${GITURL} ${ABINDIR}
     cp -r ${ABINDIR}/dist/* ${INSTDIR}/
-fi
 
 # Now, we're going to make sure that the virtualenv gets what it needs.
 
@@ -176,15 +139,10 @@ chmod a+x ${ABINDIR}/libctl.sh
 
 # Now, we need to run the configuration generator script.
 
-if [ $DEVENV -eq 1 ]; then
-	echo "you should run the configuration scripts..."
-else
-	echo "Backing up /etc/network/interfaces"
-	cp /etc/network/interfaces /etc/network/interfaces.dist
-	echo "Running configuration"
-	${ABINDIR}/genconfig.sh
-
-fi
+echo "Backing up /etc/network/interfaces"
+cp /etc/network/interfaces /etc/network/interfaces.dist
+echo "Running configuration"
+${ABINDIR}/genconfig.sh
 
 # We now need to make sure that the systemd configuration is correct. 
 # This means we need to generate systemd unit files. 
@@ -200,10 +158,13 @@ cat<<EOF>${INSTDIR}/alexandria-config.service
 [Unit]
 Description=Alexandria configuration
 DefaultDependencies=no
+Wants=network-pre.target local-fs.target
 Before=network-pre.target
-Wants=network-pre.target
+After=local-fs.target
+
+
 [Service]
-type=oneshot
+Type=oneshot
 RemainAfterExit=True
 ExecStart=${ABINDIR}/genconfig.sh
 [Install]
@@ -213,24 +174,20 @@ EOF
 cat<<EOF>${INSTDIR}/alexandria-server.service
 [Unit]
 Description=Alexandria librarian daemons
-after=network.target
+After=network.target
 
 [Service]
 Type=simple
-ExecStart=supervisord -c supervisord.conf
-
-[Exec]
-WorkingDirectory=${AINSTDIR}
+ExecStart=/usr/local/bin/supervisord -c supervisord.conf
+WorkingDirectory=${INSTDIR}
 Environment="PATH=${ABINDIR}:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 EnvironmentFile=/etc/alexandria-env
 
+[Install]
+WantedBy=multi-user.target
 EOF
 
 # Now we link them in the right way
-
-if [ $DEVENV -eq 1 ]; then
-    echo "Systemd units should be linked to /etc/systemd/system as neccesary."
-else
 
     echo "Enabling systemd units"
     # By doing this, we usurp the need to add them. However, disabling them will
@@ -249,6 +206,18 @@ else
     systemctl disable dnsmasq
     systemctl disable nginx
 
-fi
+# Final steps
+# We need to make sure that the configuration file is owned by nobody:nogroup and that it is world writable.
+# This is in typical fashion a terrible idea, but there is never a point where file access can go outside the designated filesystem.
+
+chown nobody:nogroup ${LOCALCONF}
+chmod 766 ${LOCALCONF}
+
+# Now, we're going to make the path that things are mounted at
+
+mkdir -p /media/alexandria
+chown nobody:nogroup /media/alexandria
+
+
 
 # This is all we have at the moment
