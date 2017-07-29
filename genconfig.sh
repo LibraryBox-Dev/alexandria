@@ -43,6 +43,8 @@ for service in $SERVICES; do
 	fi
 done
 
-./mount-media.sh
+# now we run the configure script for mounting the disks.
+
+${ABINDIR}/mount-media.sh
 
 # End genconfig
