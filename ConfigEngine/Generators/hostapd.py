@@ -2,7 +2,7 @@ from ConfigEngine.Generators import engine
 from ConfigEngine import toBool,writeLines
 
 @engine.assertConfig("service.hostapd",(
-        "enable",
+        "enabled",
         "interface",
         "channel",
         "ssid",
@@ -18,7 +18,7 @@ def hostapd(io):
      
     # the first thing we write to the hostapd config is the details on interface and specific
     # details. 
-    if toBool(network["enable"]) == False:
+    if toBool(network["enabled"]) == False:
        return
     writeLines(io, [
         "interface={0}".format(network['interface']),

@@ -3,7 +3,7 @@ from ConfigEngine.Generators import engine
 
 @engine.assertConfig("general",["hostname"])
 @engine.assertConfig("service.dnsmasq", [ 
-    "enable",
+    "enabled",
     "interface",
     "start_address",
     "end_address",
@@ -14,7 +14,7 @@ from ConfigEngine.Generators import engine
 def dnsmasq(buffer):
 
     dnsmasq_opts = engine.getSection("service.dnsmasq")
-    if not toBool(dnsmasq_opts["enable"]):
+    if not toBool(dnsmasq_opts["enabled"]):
         return
 
     writeLines(buffer,[
