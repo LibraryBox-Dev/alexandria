@@ -43,6 +43,10 @@ for service in $SERVICES; do
 	fi
 done
 
+# now, make sure supervisord has the right information
+
+$TOOL -outfile ${ARUNDIR}/supervisord.conf supervisord_servies
+
 # now we run the configure script for mounting the disks.
 
 ${ABINDIR}/mount-media.sh

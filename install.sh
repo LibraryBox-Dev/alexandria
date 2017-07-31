@@ -106,9 +106,6 @@ touch $LOCALCONF
 
 ENVPATH=/etc/alexandria-env
 
-if [ $DEVENV -eq 1 ]; then
-	ENVPATH=${INSTDIR}/alexandria-env
-fi
 
 echo "Environment file is in ${ENVPATH}"
 
@@ -218,6 +215,9 @@ chmod 766 ${LOCALCONF}
 mkdir -p /media/alexandria
 chown nobody:nogroup /media/alexandria
 
+# make sure that the udev rules are installed correctly
+
+cp ${INSTDIR}/99-alexandria.udev /etc/udev/rules.d/99-alexandria.rules
 
 
 # This is all we have at the moment
