@@ -1,0 +1,11 @@
+[Unit]
+Description=Alexandria configuration
+DefaultDependencies=no
+Before=network-pre.target
+Wants=network-pre.target
+[Service]
+type=oneshot
+RemainAfterExit=True
+ExecStart=/home/morgan/src/alexandria/genconfig.sh
+[Install]
+WantedBy=multi-user.target

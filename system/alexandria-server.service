@@ -1,0 +1,8 @@
+[Unit]
+Description=Alexandria librarian daemons
+after=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/home/morgan/src/alexandria/libctl.sh start
+ExecStop=/home/morgan/src/alexandria/libctl.sh stop

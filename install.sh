@@ -79,17 +79,34 @@ echo "### DEPS INSTALLED. LET'S GET THIS LIBRARY BUILT!"
 
 echo "Cloning and installing Alexandria."
 
-    mkdir -p ${INSTDIR}
-    mkdir -p ${AVARDIR}
-    mkdir -p ${ARUNDIR}
-    git clone ${GITURL} ${ABINDIR}
-    cp -r ${ABINDIR}/dist/* ${INSTDIR}/
+ 
+# Check for the source directory
+
+if [ -e $SRCDIR ]; then
+    git clone ${GITURL} /tmp/alexandria
+SRCDIR=/tmp/alexandria
+fi
+
+# Now, we copy files over that are required.
+
+mkdir -p ${INSTDIR}
+mkdir -p ${AVARDIR}
+mkdir -p ${ARUNDIR}
+mkdir -p ${ABINDIR}
+cp -r ${SRCDIR}/dist/* ${INSTDIR}/
+cp -r ${SRCDIR}/ConfigEngine ${ABINDIR}
+cp -r ${SRCDIR}/LibServer ${ABINDIR}
+cp -r ${SRCDIR}/docs ${ABINDIR}
+cp ${SRCDIR}*.sh ${ABINDIR}
+cp ${SRCDIR}/runserver.py ${ABINDIR}
+cp ${SRCDIR}/tinetd ${ABINDIR}
+cp ${SRCDIR}/cfgtool.py ${ABINDIR}
 
 # Now, we're going to make sure that the virtualenv gets what it needs.
 
 virtualenv -p python3 ${INSTDIR}/env > /dev/null
 
-$VENVPIP install -r ${ABINDIR}/requirements.txt > /dev/null
+$VENVPIP install -r ${SRCDIR}/requirements.txt > /dev/null
 
 # We now need to generate the configuration 
 

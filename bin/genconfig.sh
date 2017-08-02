@@ -4,6 +4,9 @@
 
 . /etc/alexandria-env
 
+# TODO: Firstrun code.
+
+
 TOOL="$VENVPY $ABINDIR/cfgtool.py -baseconfig ${BASECONFIG} -localconfig ${LOCALCONFIG}"
 
 # We're going to start by configuring Debian's interface file and getting things
