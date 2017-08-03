@@ -111,7 +111,7 @@ html_sidebars = {
     ]
 }
 
-html_logo="../logo-small.png"
+html_logo="../system/logo-small.png"
 
 # -- Options for HTMLHelp output ------------------------------------------
 
