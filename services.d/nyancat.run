@@ -1,2 +1,2 @@
-START="tinetd 3333 nyancat -t"
+START="${ABINDIR}/tinetd 3333 nyancat -t"
 STOP=""
