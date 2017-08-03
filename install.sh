@@ -55,7 +55,7 @@ echo "install: enforce install of current filesystem tree"
 mkdir -p ${INSTDIR}
 mkdir -p ${AVARDIR}
 mkdir -p ${ARUNDIR}
-chown nobody:nobody ${ARUNDIR}
+chown nobody:nogroup ${ARUNDIR}
 mkdir -p ${ABINDIR}
 
 
