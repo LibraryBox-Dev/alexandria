@@ -64,7 +64,7 @@ mkdir -p ${ABINDIR}
 echo "venv: create virtualenv python3 at ${VENVDIR}"
 virtualenv -p python3 ${VENVDIR} > /dev/null
 echo "venv: pip install requirements"
-$VENVPIP install -r ${SRCDIR}/requirements.txt > /dev/null
+$VENVPIP install -r ${INSTDIR}/requirements.txt
 
 echo "install: make sure ${LOCALCONF} exists"
 touch $LOCALCONF
