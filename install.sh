@@ -50,20 +50,22 @@ apt-get install -y virtualenv python3-virtualenv python3 python2.7 python-pip ng
 echo "install: global pip install of supervisor"
 pip install supervisor
 
+
+
+# I don't trust that things were brought over with the copy. Let's make sure things that should be there are.
 echo "install: enforce install of current filesystem tree"
 
-mkdir -p ${INSTDIR}
 mkdir -p ${AVARDIR}
 mkdir -p ${ARUNDIR}
 chown nobody:nogroup ${ARUNDIR}
-mkdir -p ${ABINDIR}
-
+# We don't put anything sensitive here, so this is mostly safe?
+chmod a+rw ${ARUNDIR}
 
 # Now, we're going to make sure that the virtualenv gets what it needs.
-
 echo "venv: create virtualenv python3 at ${VENVDIR}"
 virtualenv -p python3 ${VENVDIR} > /dev/null
 echo "venv: pip install requirements"
+# This was a pain to track down.
 $VENVPIP install -r ${INSTDIR}/requirements.txt
 
 echo "install: make sure ${LOCALCONF} exists"
@@ -105,6 +107,9 @@ echo "install: enforce execute permissions on scripts"
 chmod a+x ${ABINDIR}/genconfig.sh
 chmod a+x ${ABINDIR}/libctl.sh
 
+# Tinetd is a super stupid TCP daemon that I wrote.
+chmod a+x ${ABINDIR}/tinetd
+
 echo "config: back up current configuration file"
 cp /etc/network/interfaces /etc/network/interfaces.dist
 echo "config: run initial configuration."
@@ -118,6 +123,8 @@ ${ABINDIR}/genconfig.sh
 # 
 # see also https://www.freedesktop.org/wiki/Software/systemd/NetworkTarget/
 #
+
+echo "systemd: start"
 echo "systemd: write local copy of unit files."
 
 cat<<EOF>${INSTDIR}/alexandria-config.service
@@ -156,7 +163,6 @@ EOF
 # Now we link them in the right way
 
 
-echo "systemd: start"
 echo "Systemd: hard link in our service files and get going."
 ln ${INSTDIR}/alexandria-server.service /lib/systemd/system/alexandria-server.service
 ln ${INSTDIR}/alexandria-config.service /lib/systemd/system/alexandria-config.service
