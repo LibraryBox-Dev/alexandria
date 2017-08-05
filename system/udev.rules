@@ -1,4 +1,1 @@
-TEST=="/dev/usbstor", GOTO="alexandria_rules_end"
-IMPORT{file}="/etc/alexandria-udev"
 DRIVERS=="usb-storage", SUBSYSTEM=="block", ATTR{partition}=="1",TEST!="/dev/usbstor", SYMLINK:="usbstor"
-LABEL="alexandria_rules_end"
