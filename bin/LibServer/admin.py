@@ -379,6 +379,15 @@ def write_config(section):
 
     return(redirect(url_for('.config_section', section=section)))
 
+@admin.route("/export")
+@needs_authentication()
+def export_config():
+    # get the configuration file handle
+    config = get_config_reader()
+    from io import StringIO as sio
+    file = sio()
+    config.write(file)
+    return app.response_class(file.getvalue(),mimetype="text/plain")
 
 import subprocess
 import re
