@@ -6,3 +6,6 @@ docs/.buildinfo
 docs/.doctrees
 
 .vscode/
+
+**/__pycache__/**
+*.pyc
