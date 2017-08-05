@@ -276,21 +276,27 @@ def config_section(section):
     # as a worst case scenario will fall back on `cfg_generic.html`
     #   
     templates = []
-    templates.append('cfg_{0}.html'.format(section.replace('.','_')))
-    if 'type' in config_options_raw:
-        # This only works on some sections as a section is responsible for
-        # declaring its type.
-        # This means we need to check. This also is only really relevant to the
-        # multi section type of group, but this does make things simple.
-        templates.append(
-            'cfg_{0}_{1}.html'.format(
-                cgroupdict['namespace'],
-                config_options_raw['type']
+
+    # check if we were requested to show key-value stores.
+    #
+    if 'notemplate' in request.args and request.args['notemplate'] == 'true':
+            templates = ['cfg_generic.html']
+    else:
+        templates.append('cfg_{0}.html'.format(section.replace('.','_')))
+        if 'type' in config_options_raw:
+            # This only works on some sections as a section is responsible for
+            # declaring its type.
+            # This means we need to check. This also is only really relevant to the
+            # multi section type of group, but this does make things simple.
+            templates.append(
+                'cfg_{0}_{1}.html'.format(
+                    cgroupdict['namespace'],
+                    config_options_raw['type']
+                    )
                 )
-            )
-    if 'namespace' in cgroupdict:
-        templates.append('cfg_{0}.html'.format(cgroupdict['namespace']))
-    templates.append('cfg_generic.html')
+        if 'namespace' in cgroupdict:
+            templates.append('cfg_{0}.html'.format(cgroupdict['namespace']))
+        templates.append('cfg_generic.html')
 
     try:
         return render_template(list(map(lambda l:"config/"+l, templates)),

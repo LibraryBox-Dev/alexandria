@@ -80,6 +80,9 @@
         {% endif %}
         {% endfor %}
         </div>
+      {% if config.getBool('general','expert_mode',false) %}
+          <a href="{{url_for('.config_section', section=section, notemplate=true)}}">Advanced view</a>
+      {% endif %}
     </div>
   </div>
 
