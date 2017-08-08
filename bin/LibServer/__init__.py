@@ -120,6 +120,8 @@ def authenticate():
     next = None
     if 'next' in request.args:
         next = request.args["next"]
+    elif 'next' in request.form:
+        next = request.form['next']
     if request.method == "POST":
         # Check if we're correct.
         passphrase = app.config.get("general","admin_key")
@@ -130,14 +132,12 @@ def authenticate():
             print("Successful login!")
             session["authenticated"]=True
             # redirect off
-            if request.form["next"] == "":
+            if next == None:
                 print("No redirect specified. We're going home.")
                 return redirect(url_for("home"))
             else:
-                if (not 'next' in request.form) or request.form["next"] == '':
-                    return redirect(url_for('home'))
                 try:
-                    return redirect(unsign_auth_path(request.form["next"]))
+                    return redirect(unsign_auth_path(next))
                 except:
                     abort(500)
         else:
@@ -146,9 +146,9 @@ def authenticate():
     else:
         # are we already authenticated?
         if is_authenticated():
-            if 'next' in request.args:
+            if next != None:
                 try:
-                    return redirect(unsign_auth_path(request.args["next"]))
+                    return redirect(unsign_auth_path(next))
                 except:
                     return redirect(url_for('home'))
             return redirect(url_for("home"))
