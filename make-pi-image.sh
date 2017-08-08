@@ -28,7 +28,7 @@ if [ ! -f $BASEFILE ]; then
 fi
 
 
-TARGET=${OUTDIR}alexandria-$(date -Iminutes).img
+TARGET=${OUTDIR}/alexandria-$(date -Iminutes).img
 
 echo "INFO: copy ${BASEFILE} to ${TARGET}"
 cp $BASEFILE $TARGET
