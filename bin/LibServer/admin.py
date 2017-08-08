@@ -392,6 +392,26 @@ def export_config():
 import subprocess
 import re
 
+# this presumes we can use systemctl reboot as nobody with no password.
+
+@admin.route('/reboot',methods=['GET','POST'])
+@needs_authentication()
+def reboot_device():
+    if request.method == 'POST':
+        if(app.debug):
+            print("This is where we'd reboot")
+        else:
+            subprocess.call("/usr/bin/sudo /bin/systemctl reboot")
+        return render_template("message.html",
+            title="Please wait",
+            message="Your device is rebooting.",
+            backtrack_url=url_for('home'))
+    else:
+        return render_template('dialog.html',
+            title="Confirm reboot",
+            message="Are you sure you want to reboot your device?",
+            backtrack_url=url_for('.config_section',section='general')
+        )
 
 @admin.route("/sysinfo")
 def sysinfo():
