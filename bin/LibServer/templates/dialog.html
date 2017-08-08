@@ -1,0 +1,13 @@
+{% extends 'layout.html' %}
+{% block content %}
+<form method="POST">
+<h1>Confirm action</h1>
+<p>{%if message %}{{message}} {%else%} Are you sure you want to do this?{%endif%}</p>
+<button type="submit" class="btn btn-default">Yes</button>
+{% if backtrack_link %}
+<a class="btn"  href="{{backtrack_link}}">No</a>
+{% else %}
+<a class="btn"  href="javascript:history.go(-1)">No</a>
+{%endif%}
+</form>
+{%endblock%}

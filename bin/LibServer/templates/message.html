@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Message: Alexandria</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href='{{url_for('static',filename='css/bootstrap.min.css')}}' rel='stylesheet'>
+
+
+    <!-- Custom styles for this template -->
+    <link href="{{url_for('static', filename='css/signin.css')}}" rel="stylesheet">
+
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="form-signin">
+      <h2>{{title}}</h2>
+      <div class="well">
+          <p>{{message}}</p>
+          <a href="{{backtrack_url}}" class="btn btn-default btn-large btn-block">OK</a>
+      </div>
+      </div>
+    </div> <!-- /container -->
+
+
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>
+  </body>
+</html>
