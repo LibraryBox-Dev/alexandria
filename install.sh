@@ -198,6 +198,13 @@ chown nobody:nogroup /media/alexandria
 echo "udev: add usbstor rule"
 cp ${INSTDIR}/system/udev.rules /etc/udev/rules.d/99-alexandria.rules
 
+# add the appropriate rules for sudoers such that `nobody` can reboot the system:
+
+echo "nobody ALL=NOPASSWD: /bin/systemctl poweroff,/bin/systemctl reboot" > /etc/sudoers.d/020-nobody-reboot
+
+# make sure it has the right permission (440)
+
+chmod 440 /etc/sudoers/020-nobody-reboot
 
 # This is all we have at the moment
 
