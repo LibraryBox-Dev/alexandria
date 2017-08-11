@@ -1,10 +1,30 @@
 {% extends "config/base.html" %}
 {% block config_page_content  %}
 
-<p><em>This section is currently under construction</em></p>
+<p><em>This section is currently under construction.</em> Internal may cause problems for
+     now. Turn on Expert mode and manually configure this section if you have any other use
+      case than the default.</p>
 
-<fieldset>
-    <label><input type="radio" name="mode" value="usb" /> USB Storage: The first partition of the first disk is used for storage.</label>
-</fieldset>
+ <div class="form-group">
+ <label for="storageMode" class="col-lg-2 control-label">Storage Mode</label>
+ <div class="col-lg-10">
+<select name="mode" class="form-control">
+    <option value="usb" {%if values['mode'] == 'usb'%}selected{%endif%}>
+        External disk (USB)
+    </option>
+    <option value="internal" {%if values['mode'] == 'internal'%}selected{%endif%}>
+        Use internal storage
+    </option>
+    <option value="manual" {%if values['mode'] == 'manual'%}selected{%endif%}>
+        Use manual storage configuration
+    </option>
+</select>
+ </div>
+ </div>
 
+
+
+
+{{savebutton()}}
 {% endblock %}
+

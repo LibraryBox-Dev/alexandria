@@ -23,17 +23,6 @@
  </div>
  </div>{%- endmacro %}
 
-{% macro dropdown(name, label, options) -%}
-<div class="form-group">
- <label for="{{name}}" class="col-md-3 control-label">{{label}}</label>
- <div class="col-md-9">
-	 <select name="{{name}}" class="form-control" id="{{name}}">{% for option_key in options %}
-		<option value="{{option_key}}">{{options[option_key]}}</option>
-		 {%endfor%}
-	 </select>
- </div>
- </div>
-{%- endmacro %}
 {% block content %}
 
 <!-- Begin configuration area container. -->
@@ -63,29 +52,32 @@
     <!-- sidebar -->
     <div class="col-md-3 col-md-pull-9">
         <!-- begin sidebar content -->
-        <div class="list-group">
+        <ul class="nav nav-pills nav-stacked">
         {% for group in sidebar.keys()|sort %}
         <!-- group = {{group}}-->
         {% if group == current_group %}
-            <a href="{{url_for('.config_section', section=sidebar[group].section)}}" class="list-group-item active">
+            <li class="active"><a href="{{url_for('.config_section', section=sidebar[group].section)}}">
               <i class="{{sidebar[group].icon}} fa-fw"></i>&nbsp;{{sidebar[group].name}}
             </a>
+            </li>
             {% if sidebar[group].children %}
-              <div class="list-group-item">    
+              <ul class="nav nav-pills nav-stacked well">    
               {% for child in sidebar[group].children %}
-                <a class="list-group-item {%if child.section == current_section %}active{%endif%}" href="{{url_for('.config_section', section=child.section)}}">
+              <li class="{%if child.section == current_section %}active{%endif%}">
+                <a href="{{url_for('.config_section', section=child.section)}}">
                     <i class="fa fa-fw fa-sliders"></i>&nbsp;{{child.name}} ({{child.section}})
                   </a>
+                </li>
                 {% endfor %}
-                </div>
+                </ul>
             {%endif%}
         {% else %}
-        <a class="list-group-item" href="{{url_for('.config_section', section=sidebar[group].section)}}"><i class="{{sidebar[group].icon}} fa-fw"></i>&nbsp;{{sidebar[group].name}}</a>
+        <li><a href="{{url_for('.config_section', section=sidebar[group].section)}}"><i class="{{sidebar[group].icon}} fa-fw"></i>&nbsp;{{sidebar[group].name}}</a></li>
         {% endif %}
         {% endfor %}
-        </div>
+        </ul>
       {% if config.getBool('general','expert_mode',false) %}
-          <a href="{{url_for('.config_section', section=current_section, notemplate='true')}}">Advanced view</a>
+          <hr /><a class="btn btn-block btn-default" href="{{url_for('.config_section', section=current_section, notemplate='true')}}">Advanced view</a>
       {% endif %}
     </div>
   </div>
