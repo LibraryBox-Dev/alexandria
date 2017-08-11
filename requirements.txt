@@ -5,3 +5,5 @@ Jinja2==2.9.6
 MarkupSafe==1.0
 python-pidfile==1.0.1
 Werkzeug==0.12.2
+exifread==2.1.2
+Markdown==2.6.4
