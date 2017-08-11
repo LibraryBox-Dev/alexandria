@@ -33,11 +33,11 @@
 {% for file in listing_files %}
 <div class="row">
     <div class="col-sm-8 col-xs-7">
-        <a href="{{url_for('browser.fetch_file', name=file.fullpath)}}">
+        <a href="{{url_for('browser.preview_file', name=file.fullpath)}}">
         <i class="fa fa-fw fa-file"></i>
         {{file.name}}
         </a>
-        <div class="pull-right"> <a href="#"><i class="fa fa-fw fa-info"></i></a> | <a href="#"><i class="fa fa-fw fa-download"></i></a></div>
+        <div class="pull-right"><a href="{{url_for('browser.fetch_file',name=file.fullpath,dl=1)}}"><i class="fa fa-fw fa-download"></i></a></div>
         </div>
     <div class="col-sm-2 col-xs-1">File</div>
     <div class="col-sm-2 col-xs-1">{{file.size}}</div>

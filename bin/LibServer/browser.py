@@ -129,6 +129,40 @@ def manage(action, path):
     """
     pass
 
+from LibServer.preview import get_previews
+
+@browser.route('/preview/<path:name>')
+def preview_file(name):
+    # get information about the file
+    basepath=app.config.get("storage", "location")
+
+    # Now, we're going to join the two together and normalize path
+    fullpath = safe_join(basepath, name)
+
+    # TODO: This could be nicer. 
+    if(not os.path.exists(fullpath)):
+        abort(404)
+
+
+
+    parent_dir='/'.join(name.split('/')[:-1])
+
+    file_stat = os.stat(fullpath)
+    file_record = {
+        "path":name,
+        "name":name.split('/')[-1],
+        "size":sizeof_fmt(file_stat.st_size)
+    }
+    previews = get_previews(name)
+    if(len(previews) > 0):
+        file_record["previews"] = previews
+    # Render the preview template.
+    return render_template('browser/preview_panel.html',
+        parent_dir=parent_dir,
+        file=file_record
+        )
+
+
 @browser.route("/content/<path:name>")
 def fetch_file(name,attach=False):
     # get the safe path to where

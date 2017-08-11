@@ -1,0 +1,80 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
+
+    <title>File information: {{file.name}}</title>
+
+    <!-- Bootstrap core CSS -->
+     <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/bootstrap.min.css')}}" />
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/font-awesome.min.css')}}" />
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/local.css')}}" />
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/site.css')}}" />
+    <!-- Custom styles for this template -->
+    <link href="{{url_for('static', filename='css/preview.css')}}" rel="stylesheet">
+    <script src="/static/js/modernizr-2.6.2.js"></script>
+
+  </head>
+
+  <body>
+    <div class="container">
+
+        
+{% if file.previews %}
+      <div class="header clearfix">
+        <nav>
+          <ul id="previewlist" class="nav nav-pills pull-right">
+            {% for tpreview in file.previews %}
+                <li role="presentation"><a href="#preview-{{tpreview.id}}" data-toggle="tab"><i class="fa fa-fw fa-{{tpreview.icon}}">&nbsp;</i> {{tpreview.name}}</a></li>
+            {% endfor %}
+                <li><a href="{{url_for('browser.fetch_file', name=file.path, dl=1)}}"><i class="fa fa-download">Download</i></a></li>
+          </ul>
+        </nav>
+        <h3 class="text-muted">{{file.name}}</h3>
+        <div><a href="{{url_for('browser.browse', where=parent_dir)}}"><i class="fa fa-fw fa-arrow-left"></i>To parent directory</a></div>
+      </div>
+      <div class="tab-content">
+      {%for tpreview in file.previews %}
+      <div class="tab-pane preview" role="tabpanel" id="preview-{{tpreview.id}}" class="preview">
+          {{tpreview.content|safe}}
+      </div>
+      {% endfor %}
+      </div>
+{% else %}
+
+    <div class="jumbotron">
+        <h1>{{file.name}}</h1>
+        <p>{{file.size}}</p>
+        <p><a class="btn btn-primary btn-large" href="{{url_for('browser.fetch_file', name=file.path, dl=1)}}">Download</a></p>    
+    </div>
+
+{% endif %}
+
+    </div>
+{% if file.previews %}
+{% for preview in file.previews %}
+    <!-- file preview js -->
+{% endfor %}
+{%endif%}
+
+    <script src="{{url_for('static', filename='js/jquery-1.10.2.js')}}"></script>
+    <script src="{{url_for('static', filename='js/bootstrap.js')}}"></script>
+    <script src="{{url_for('static', filename='js/respond.js')}}"></script>
+ 
+
+<script type="text/javascript">
+$("#previewlist a:first").tab('show')
+</script>
+
+    </div> <!-- /container -->
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>
+  </body>
+</html>
