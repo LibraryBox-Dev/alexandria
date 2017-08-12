@@ -1,0 +1,190 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Hacking on Alexandria &#8212; Alexandria 0.1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="top" title="Alexandria 0.1.0 documentation" href="../index.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="hacking-on-alexandria">
+<h1>Hacking on Alexandria<a class="headerlink" href="#hacking-on-alexandria" title="Permalink to this headline">¶</a></h1>
+<p>Alexandria was built to be as extensible as possible. There are a handful of things that are needed to add
+something to the interface.</p>
+<div class="section" id="services">
+<h2>Services<a class="headerlink" href="#services" title="Permalink to this headline">¶</a></h2>
+<p>A service under Alexandria must have thee things:</p>
+<ul class="simple">
+<li>An entry in either the base or local configuration file, designated as
+- a section named service.&lt;name&gt;</li>
+<li>an executable file in services.d called <cite>&lt;name&gt;.cfg</cite></li>
+<li>A file in services.d called <cite>&lt;name.run&gt;</cite> containing:
+- A line in the form <cite>START=&#8221;....&#8221;</cite>
+- A line in the form <cite>STOP=&#8221;....&#8221;</cite></li>
+</ul>
+<p>The <cite>.run</cite> file specifies the command to run. It must:</p>
+<ul class="simple">
+<li>not be a shell file</li>
+<li>must not fork</li>
+<li>must not spawn subshells</li>
+</ul>
+<p>(this may change in the future)</p>
+<p>Service configuraition is done by calling <cite>services.d/&lt;name&gt;.cfg</cite>; this will be done from the
+alexandria installation directory.</p>
+<p>You will need to add a section to either the local or base configuration (if you are building your own distribution,
+you should be adding it to the global configuration). Adding a control panel is as simple as adding a template. Follow the pattern
+found in the existing templates, then making sure you have it categorized correctly.</p>
+</div>
+<div class="section" id="tool-reference">
+<h2>Tool Reference<a class="headerlink" href="#tool-reference" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="libserv">
+<h3>LibServ<a class="headerlink" href="#libserv" title="Permalink to this headline">¶</a></h3>
+<p>LibServ is the actual librarian service. It has two roles:</p>
+<blockquote>
+<div><ul class="simple">
+<li>Browsing and management of files</li>
+<li>Administration</li>
+</ul>
+</div></blockquote>
+<p>LibServ consumes the configuration at start-time. The values are not at regular intervals re-read, and
+any change to the settings that affect the operation of LibServ will only take effect after LibServ is
+restarted.</p>
+</div>
+<div class="section" id="genconfig">
+<h3>genconfig<a class="headerlink" href="#genconfig" title="Permalink to this headline">¶</a></h3>
+<p><cite>genconfig</cite> exists to generate configurations from the base and local configurations. It relies heavily
+on a python script, cfgtool</p>
+</div>
+<div class="section" id="cfgtool">
+<h3>cfgtool<a class="headerlink" href="#cfgtool" title="Permalink to this headline">¶</a></h3>
+<p><cite>cfgtool</cite> is the primary mode of interaction with ConfigEngine, the configuration generator engine. It is
+the means to generate configuration from the generators in ConfigEngine</p>
+</div>
+<div class="section" id="configengine">
+<h3>ConfigEngine<a class="headerlink" href="#configengine" title="Permalink to this headline">¶</a></h3>
+<p>ConfigEngine is the configuration file generation engine. It operates by taking the local and base
+configuration files, merging them, then allowing the various configuration outputs (&#8216;generators&#8217;) to
+read the configuration file, assert the presence of certain options, as well as potentially combine
+other generators. For instance, a simple generator can be as easy as</p>
+<blockquote>
+<div><p>&#64;engine.generator(&#8216;Configure the debian Loopback interface&#8217;)
+def debian_loopback(outstream):</p>
+<blockquote>
+<div>print(&#8220;auto lo&#8221;,&#8221;iface lo inet loopback&#8221;, file=outstream)</div></blockquote>
+</div></blockquote>
+<p>while more complex generators might call <cite>engine.getSection(section)</cite>. See <cite>ConfigEngine.Generators.network</cite>
+for more examples of generators.</p>
+<p>Adding a generator simply requires adding a python module to <cite>ConfigEngine.Generators</cite> and adding the
+<cite>&#64;engine.generator(desc)</cite> decorator as the final decorator.</p>
+</div>
+</div>
+<div class="section" id="services-that-alexandria-s-configuration-interface-can-handle">
+<h2>Services that Alexandria&#8217;s configuration interface can handle<a class="headerlink" href="#services-that-alexandria-s-configuration-interface-can-handle" title="Permalink to this headline">¶</a></h2>
+<p>By default, Alexandria has some built-in configuration systems. It assumes a Debian-like system below, however
+this can be easily changed.</p>
+<p>Included services are:</p>
+<ul class="simple">
+<li>hostapd (802.11 AP host)</li>
+<li>dnsmasq (DNS and DHCP)</li>
+<li>btle-beacon (Bluetooth beaconing)</li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/logo-small.png" alt="Logo"/>
+            </a></p>
+<h1 class="logo"><a href="../index.html">Alexandria</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installing.html">Installing Alexandria</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started with Alexandria</a></li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">References</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Morgan Gangwere, The LibraryBox project.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.9</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
+      
+      |
+      <a href="../_sources/ref/hacking.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

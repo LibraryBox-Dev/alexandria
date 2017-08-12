@@ -6,3 +6,4 @@ References
 
    api
    settings
+   hacking

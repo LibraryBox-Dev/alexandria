@@ -17,9 +17,9 @@ Alexandria is built with Python, and intended for low-power devices such as the 
    :maxdepth: 2
    :caption: Contents:
 
+   installing
    getting_started
    ref/references
-    
 
 Indices and tables
 ==================

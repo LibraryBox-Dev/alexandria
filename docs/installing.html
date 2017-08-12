@@ -1,0 +1,192 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Installing Alexandria &#8212; Alexandria 0.1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="top" title="Alexandria 0.1.0 documentation" href="index.html" />
+    <link rel="next" title="Getting Started with Alexandria" href="getting_started.html" />
+    <link rel="prev" title="Alexandria: A librarian for your stuff" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="installing-alexandria">
+<h1>Installing Alexandria<a class="headerlink" href="#installing-alexandria" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="from-source">
+<h2>From source<a class="headerlink" href="#from-source" title="Permalink to this headline">¶</a></h2>
+<p>Installing Alexandria from source is relatively easy. The default installer
+makes the assumption that you&#8217;re running on a Debian-based system. If you are
+not running on Debian, you will need to make sure to have the closest equivalent
+packages as listed in the installer script.</p>
+<p>To install on a Debian based system, simply</p>
+<blockquote>
+<div><ul class="simple">
+<li>get a copy of the repository from git and put it somewhere like <code class="docutils literal"><span class="pre">/opt/alexandria</span></code></li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="from-prepared-sd-cards">
+<h2>From prepared SD cards<a class="headerlink" href="#from-prepared-sd-cards" title="Permalink to this headline">¶</a></h2>
+<p>Installing from a prepared SD card is the most common mechanism. To do so, it is recommended you use
+<a class="reference external" href="http://etcher.io">Etcher</a> for writing SD card images.</p>
+<p>You will need:</p>
+<ul class="simple">
+<li>An SD card of at least 4GB in size</li>
+<li>A Raspberry Pi 3</li>
+<li>Etcher</li>
+<li>Make sure you have Etcher open and your SD card inserted and visible to your computer</li>
+<li>Select the Alexandria SD card image</li>
+<li>Choose your SD card from the list.</li>
+<li>Press go</li>
+<li>Sit back, relax, let it go.</li>
+</ul>
+<p>For Linux users, if you aren&#8217;t interested in installing another utility, you&#8217;re going to need
+to unzip the alexandria archive, then use:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">dd</span> <span class="k">if</span><span class="o">=&lt;</span><span class="n">path</span> <span class="n">to</span> <span class="n">decompressed</span> <span class="n">image</span><span class="o">&gt;</span> <span class="n">of</span><span class="o">=&lt;</span><span class="n">path</span> <span class="n">to</span> <span class="n">your</span> <span class="n">SD</span> <span class="n">card</span><span class="o">&gt;</span> <span class="n">BS</span><span class="o">=</span><span class="mi">1</span><span class="n">M</span>
+</pre></div>
+</div>
+<p>If your computer has an SD card reader built in, it is likely you want <code class="docutils literal"><span class="pre">/dev/mmcblk0</span></code>. In all cases,
+you want the whole device. If your card reader comes up as a USB disk (not an MMC device), you will
+likely want a device named <code class="docutils literal"><span class="pre">/dev/sdc</span></code>. use:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">watch</span> <span class="s1">&#39;dmesg | tail&#39;</span>
+</pre></div>
+</div>
+<p>to watch the very end of the message log. Inserting and removing your device should show
+something like:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mf">606741.531369</span><span class="p">]</span> <span class="n">usb</span> <span class="mi">2</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span> <span class="n">new</span> <span class="n">SuperSpeed</span> <span class="n">USB</span> <span class="n">device</span> <span class="n">number</span> <span class="mi">2</span> <span class="n">using</span> <span class="n">xhci_hcd</span>
+<span class="p">[</span><span class="mf">606741.555102</span><span class="p">]</span> <span class="n">usb</span> <span class="mi">2</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span> <span class="n">New</span> <span class="n">USB</span> <span class="n">device</span> <span class="n">found</span><span class="p">,</span> <span class="n">idVendor</span><span class="o">=</span><span class="mi">1</span><span class="n">f75</span><span class="p">,</span> <span class="n">idProduct</span><span class="o">=</span><span class="mi">0917</span>
+<span class="p">[</span><span class="mf">606741.555112</span><span class="p">]</span> <span class="n">usb</span> <span class="mi">2</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span> <span class="n">New</span> <span class="n">USB</span> <span class="n">device</span> <span class="n">strings</span><span class="p">:</span> <span class="n">Mfr</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">Product</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">SerialNumber</span><span class="o">=</span><span class="mi">3</span>
+<span class="p">[</span><span class="mf">606741.555118</span><span class="p">]</span> <span class="n">usb</span> <span class="mi">2</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span> <span class="n">Product</span><span class="p">:</span> <span class="n">USB</span> <span class="mf">3.0</span>
+<span class="p">[</span><span class="mf">606741.555123</span><span class="p">]</span> <span class="n">usb</span> <span class="mi">2</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span> <span class="n">Manufacturer</span><span class="p">:</span>  <span class="n">innostor</span>
+<span class="p">[</span><span class="mf">606741.555128</span><span class="p">]</span> <span class="n">usb</span> <span class="mi">2</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span> <span class="n">SerialNumber</span><span class="p">:</span> <span class="mi">201207224131</span>
+<span class="p">[</span><span class="mf">606741.971604</span><span class="p">]</span> <span class="n">usb</span><span class="o">-</span><span class="n">storage</span> <span class="mi">2</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mf">1.0</span><span class="p">:</span> <span class="n">USB</span> <span class="n">Mass</span> <span class="n">Storage</span> <span class="n">device</span> <span class="n">detected</span>
+<span class="p">[</span><span class="mf">606741.971917</span><span class="p">]</span> <span class="n">scsi</span> <span class="n">host1</span><span class="p">:</span> <span class="n">usb</span><span class="o">-</span><span class="n">storage</span> <span class="mi">2</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mf">1.0</span>
+<span class="p">[</span><span class="mf">606741.973600</span><span class="p">]</span> <span class="n">usbcore</span><span class="p">:</span> <span class="n">registered</span> <span class="n">new</span> <span class="n">interface</span> <span class="n">driver</span> <span class="n">usb</span><span class="o">-</span><span class="n">storage</span>
+<span class="p">[</span><span class="mf">606742.001424</span><span class="p">]</span> <span class="n">usbcore</span><span class="p">:</span> <span class="n">registered</span> <span class="n">new</span> <span class="n">interface</span> <span class="n">driver</span> <span class="n">uas</span>
+<span class="p">[</span><span class="mf">606742.996637</span><span class="p">]</span> <span class="n">scsi</span> <span class="mi">1</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span> <span class="n">Direct</span><span class="o">-</span><span class="n">Access</span>     <span class="n">IS917</span>                     <span class="mf">1.00</span> <span class="n">PQ</span><span class="p">:</span> <span class="mi">0</span> <span class="n">ANSI</span><span class="p">:</span> <span class="mi">6</span>
+<span class="p">[</span><span class="mf">606742.997978</span><span class="p">]</span> <span class="n">sd</span> <span class="mi">1</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span> <span class="n">Attached</span> <span class="n">scsi</span> <span class="n">generic</span> <span class="n">sg1</span> <span class="nb">type</span> <span class="mi">0</span>
+<span class="p">[</span><span class="mf">606742.998288</span><span class="p">]</span> <span class="n">sd</span> <span class="mi">1</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span> <span class="p">[</span><span class="n">sdb</span><span class="p">]</span> <span class="mi">31457280</span> <span class="mi">512</span><span class="o">-</span><span class="n">byte</span> <span class="n">logical</span> <span class="n">blocks</span><span class="p">:</span> <span class="p">(</span><span class="mf">16.1</span> <span class="n">GB</span><span class="o">/</span><span class="mf">15.0</span> <span class="n">GiB</span><span class="p">)</span>
+<span class="p">[</span><span class="mf">606742.998465</span><span class="p">]</span> <span class="n">sd</span> <span class="mi">1</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span> <span class="p">[</span><span class="n">sdb</span><span class="p">]</span> <span class="n">Write</span> <span class="n">Protect</span> <span class="ow">is</span> <span class="n">off</span>
+<span class="p">[</span><span class="mf">606742.998474</span><span class="p">]</span> <span class="n">sd</span> <span class="mi">1</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span> <span class="p">[</span><span class="n">sdb</span><span class="p">]</span> <span class="n">Mode</span> <span class="n">Sense</span><span class="p">:</span> <span class="mi">23</span> <span class="mi">00</span> <span class="mi">00</span> <span class="mi">00</span>
+<span class="p">[</span><span class="mf">606742.998647</span><span class="p">]</span> <span class="n">sd</span> <span class="mi">1</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span> <span class="p">[</span><span class="n">sdb</span><span class="p">]</span> <span class="n">Write</span> <span class="n">cache</span><span class="p">:</span> <span class="n">disabled</span><span class="p">,</span> <span class="n">read</span> <span class="n">cache</span><span class="p">:</span> <span class="n">disabled</span><span class="p">,</span> <span class="n">doesn</span><span class="s1">&#39;t support DPO or FUA</span>
+<span class="p">[</span><span class="mf">606743.002989</span><span class="p">]</span>  <span class="n">sdb</span><span class="p">:</span> <span class="n">sdb1</span>
+<span class="p">[</span><span class="mf">606743.004315</span><span class="p">]</span> <span class="n">sd</span> <span class="mi">1</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span> <span class="p">[</span><span class="n">sdb</span><span class="p">]</span> <span class="n">Attached</span> <span class="n">SCSI</span> <span class="n">removable</span> <span class="n">disk</span>
+</pre></div>
+</div>
+<p>Here, the important bit is <code class="docutils literal"><span class="pre">sdb</span></code>: that&#8217;s the device name.</p>
+</div>
+<div class="section" id="creating-sd-card-images">
+<h2>Creating SD card images<a class="headerlink" href="#creating-sd-card-images" title="Permalink to this headline">¶</a></h2>
+<p>You will need:</p>
+<ul class="simple">
+<li>A Raspbian disk image</li>
+<li>the following packages: <code class="docutils literal"><span class="pre">systemd-nspawn</span></code>, <code class="docutils literal"><span class="pre">zip</span></code>, <code class="docutils literal"><span class="pre">losetup</span></code>, <code class="docutils literal"><span class="pre">qemu-user-static</span></code>, <code class="docutils literal"><span class="pre">binfmt-support</span></code>.</li>
+</ul>
+<p>The tool <code class="docutils literal"><span class="pre">make-pi-image.sh</span></code> is used for this typically. This will potentially work on any ARM-based system
+that looks like Raspbian and which has /boot on its own partition. Adjust for your target.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/logo-small.png" alt="Logo"/>
+            </a></p>
+<h1 class="logo"><a href="index.html">Alexandria</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Installing Alexandria</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#from-source">From source</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#from-prepared-sd-cards">From prepared SD cards</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#creating-sd-card-images">Creating SD card images</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started with Alexandria</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ref/references.html">References</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">Alexandria: A librarian for your stuff</a></li>
+      <li>Next: <a href="getting_started.html" title="next chapter">Getting Started with Alexandria</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Morgan Gangwere, The LibraryBox project.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.9</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
+      
+      |
+      <a href="_sources/installing.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
