@@ -11,33 +11,41 @@ packages as listed in the installer script.
 
 To install on a Debian based system, simply
 
- * get a copy of the repository from git and put it somewhere like ``/opt/alexandria``
+* get a copy of the repository from git and put it somewhere like ``/opt/alexandria``
 
-.. note: This location will be set in stone to some degree. You will need to edit ``/etc/alexandria-env`` if something changes.
+.. note::
+    This location will be set in stone to some degree.
+    You will need to edit ``/etc/alexandria-env`` if something changes.
 
- * run install.sh as root
- * you're now ready to go
+* run install.sh as root
+* you're now ready to go
 
-.. warning: This will disable certain systemd units. If you do not wish to have systemd units
-           modified, then you WILL have to modify the installer script in order to avoid this.
+.. warning::
+     This will disable certain systemd units. If you do not wish to have systemd units
+     modified, then you WILL have to modify the installer script in order to avoid this.
 
-.. note: Alexandria's installer assumes you are running the Alexandria as the primary service of
-        the device. If this is not the case, please see the section "Running the librarian on its own"
+.. note::
+    Alexandria's installer assumes you are running the Alexandria as the primary service of
+    the device. If this is not the case, please see the section "Running the librarian on its own"
 
 From prepared SD cards
 ======================
 
-.. note: Prepared SD cards are intended for use with the Raspberry Pi 3. While it is possible to run
-        the prepared Alexandria installation on a Raspberry Pi 2, it is not suggested and may have
-        performance issues. This is not currently supported or suggested.
+.. note::
+    Prepared SD cards are intended for use with the Raspberry Pi 3. While it is possible to run
+    the prepared Alexandria installation on a Raspberry Pi 2, it is not suggested and may have
+    performance issues. This is not currently supported or suggested.
 
 Installing from a prepared SD card is the most common mechanism. To do so, it is recommended you use
 `Etcher <http://etcher.io>`_ for writing SD card images.
 
-.. warning: This process **erases** any content you have on the SD card.
+.. warning::
+    This process **erases** any content you have on the SD card.
 
-.. warning: **Etcher will make every attempt to not overwrite your system's disk**, however it will
-           erase the content of any USB disk you point it at. Double check *all* 
+.. warning::
+    **Etcher will make every attempt to not overwrite your system's disk**, however it will
+    erase the content of any USB disk you point it at. Double check *all* settings before starting
+    the final burn process.
 
 You will need:
 
@@ -51,10 +59,11 @@ You will need:
 * Press go
 * Sit back, relax, let it go.
 
-.. note: Windows will helpfully try and pop up a series of dialogs during this process. These
-        include a message stating that the disk is not formatted. Ignore these dialogs, closing
-        them. It is advised to leave your computer alone during this time and wait until the
-        process has finished.
+.. note::
+    Windows will helpfully try and pop up a series of dialogs during this process. These
+    include a message stating that the disk is not formatted. Ignore these dialogs, closing
+    them. It is advised to leave your computer alone during this time and wait until the
+    process has finished.
 
 For Linux users, if you aren't interested in installing another utility, you're going to need
 to unzip the alexandria archive, then use::
@@ -94,13 +103,14 @@ Here, the important bit is ``sdb``: that's the device name.
 Creating SD card images
 =======================
 
-.. note: this section is intended for the brave at heart. This process will generate a working raspberry pi
-        disk image.
+.. note:: this section is intended for the brave at heart. This process will generate a working raspberry pi
+          disk image.
 
 You will need:
 
 * A Raspbian disk image
 * the following packages: ``systemd-nspawn``, ``zip``, ``losetup``, ``qemu-user-static``, ``binfmt-support``.
+* The alexandria source tree
 
 .. note: You are not required to use the static version of qemu-user, but it will make your life easier.
 
