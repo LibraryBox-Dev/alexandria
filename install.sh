@@ -204,7 +204,7 @@ echo "nobody ALL=NOPASSWD: /bin/systemctl poweroff,/bin/systemctl reboot" > /etc
 
 # make sure it has the right permission (440)
 
-chmod 440 /etc/sudoers/020-nobody-reboot
+chmod 440 /etc/sudoers.d/020-nobody-reboot
 
 # This is all we have at the moment
 

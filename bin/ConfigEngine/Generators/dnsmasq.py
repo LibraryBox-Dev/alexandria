@@ -38,6 +38,8 @@ def dnsmasq(buffer):
     writeLines(buffer, ["address=/{0}/{1}".format(
         engine.getOption("general","hostname")+"."+engine.getOption("general","tld"),
         ipAddr
-        )])
+        ),
+        "address=/apple.com/"+ipaddr
+    ])
     pass
 
