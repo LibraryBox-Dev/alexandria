@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
  
-    <title>Alexandria</title>
+    <title>{{config.product}}</title>
 
     <!-- Bootstrap core CSS -->
     <link href="{{url_for('static', filename='css/bootstrap.min.css')}}" rel="stylesheet">
@@ -21,7 +21,7 @@
         <div class="cover-container">
           <div class="masthead clearfix">
             <div class="inner">
-              <h3 class="masthead-brand">Alexandria</h3>
+		    <h3 class="masthead-brand">{{config.product}}</h3>
               <nav>
                 <ul class="nav masthead-nav">
                   <li class="active"><a href="{{url_for('home')}}">Home</a></li>
@@ -33,7 +33,7 @@
           </div>
 
           <div class="inner cover">
-            <h1 class="cover-heading">Welcome to Alexandria</h1>
+		  <h1 class="cover-heading">Welcome to {{config.product}}</h1>
             <p class="lead">The content here is for sharing and enjoying.</p>
             <p class="lead">
               <a href="{{url_for('browser.browse')}}" class="btn btn-lg btn-default">Go Exploring</a>
@@ -42,7 +42,7 @@
 
           <div class="mastfoot">
             <div class="inner">
-              <p>This is running Alexandria v {{config["version"] or "[git]"}}.</p>
+		    <p>Running {{config.product}} version {{config.version}}</p>
             </div>
           </div>
 

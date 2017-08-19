@@ -37,9 +37,6 @@ if __name__ == '__main__':
     parser.allow_abbrev = False
     args = parser.parse_args()
 
-    app.config["product"] = "PriateBox"
-    app.config["version"] = "3.0-NG"
-
     HOST = environ.get('SERVER_HOST', args.host)
     try:
         PORT = int(environ.get('SERVER_PORT', args.port))
@@ -57,7 +54,7 @@ if __name__ == '__main__':
 
     app.config["product"] = app.config.get(
         "alexandria", "product", "Alexandria")
-    app.config["version"] = app.config.get("alexandria", "version", "(HEAD?)")
+    app.config["version"] = app.config.get("alexandria", "version", "(Unknown)")
 
     app.secret_key = ''.join(
         random.choice(string.ascii_uppercase + string.digits)
