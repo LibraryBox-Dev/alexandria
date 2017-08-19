@@ -39,7 +39,7 @@ def dnsmasq(buffer):
         engine.getOption("general","hostname")+"."+engine.getOption("general","tld"),
         ipAddr
         ),
-        "address=/apple.com/"+ipAddr
+        "address=/#/"+ipAddr
     ])
     pass
 
