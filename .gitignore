@@ -10,3 +10,5 @@ docs/.doctrees
 **/__pycache__/**
 *.pyc
 local.ini
+
+**~
