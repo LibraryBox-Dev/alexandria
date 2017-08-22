@@ -20,8 +20,8 @@ def dnsmasq(buffer):
     writeLines(buffer,[
         "interface={0}".format(dnsmasq_opts["interface"]),
         "dhcp-range={start_address},{end_address},{subnet_mask},{lease_time}".format_map(dnsmasq_opts),
-        "local=/{0}/".format(engine.getOption("general","tld")),
-        "dhcp-option=3"
+        "dhcp-option=3",
+        "dhcp-option=15"
         ])
 
     # we need to get the IP address of the interface.
@@ -38,8 +38,7 @@ def dnsmasq(buffer):
     writeLines(buffer, ["address=/{0}/{1}".format(
         engine.getOption("general","hostname")+"."+engine.getOption("general","tld"),
         ipAddr
-        ),
-        "address=/#/"+ipAddr
+        )
     ])
     pass
 
