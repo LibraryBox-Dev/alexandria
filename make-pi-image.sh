@@ -51,7 +51,7 @@ if [ -d /mnt/opt/alexandria/venv ]; then
 fi
 
 echo "INFO: Starting systemd-nspawn in qemu-arm-static mode"
-systemd-nspawn --bind `which qemu-arm-static` -D /mnt bin/bash /opt/alexandria/install.sh
+systemd-nspawn --bind /dev/fuse --bind `which qemu-arm-static` -D /mnt bin/bash /opt/alexandria/install.sh
 
 echo "INFO: Unmounting /mnt/boot and /mnt"
 umount /mnt/boot
